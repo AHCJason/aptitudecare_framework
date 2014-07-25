@@ -10,25 +10,39 @@ class Model {
 		}
 		return new $class;
 	}
-
-
-	public function fetchRow($sql, $params = array()) {
+	
+	
+	public function fetchOne($sql, $params = array(), $table = null) {
+		if ($table == '') {
+			$table = get_called_class();
+		}
 		try {
-			$record = db()->getRow($sql, $params, get_class($this));
+			return db()->fetchRow($sql, $params, $table);
 		} catch (PDOException $e) {
 			echo $e;
 		}
-		return $record;
-		
 	}
 	
-	public function fetchRows($sql, $params) {
+	public function fetchAll($sql, $params = array(), $table = null) {
+		if ($table == '') {
+			$table = get_called_class();
+		}
 		try {
-			$records = db()->getRows($sql, $params, get_class($this));
+			return db()->fetchRows($sql, $params, $table);
 		} catch (PDOException $e) {
 			echo $e;
 		}
-		return $records;
-		
 	}
+	
+	
+	public function fetchByPublicId($id) {
+		$table = underscoreString(get_called_class());
+		$sql = "SELECT * FROM {$table} WHERE {$table}.`public_id`=:pubid";
+		$params[':pubid'] = $id;
+		return db()->fetchRow($sql, $params, $table);
+	}
+	
+	
+	
+	
 }

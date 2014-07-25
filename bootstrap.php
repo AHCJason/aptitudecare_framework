@@ -9,18 +9,7 @@
 	define('JS', SITE_URL . DS . 'js/');
 	define('FILES', SITE_URL . DS . 'files/');
 	define('FONTS', SITE_URL . DS . 'fonts/');
-	define('VIEWS', PROTECTED_DIR . DS . 'views');
-
-
-/*
- *	The config file contains basic, site-wide configurations. 
- *
- */
-	
-	if (file_exists(PROTECTED_DIR . DS . 'Configs' . DS . 'config.php')) {
-		require(PROTECTED_DIR . DS . 'Configs' . DS . 'config.php');
-	}
-	
+	define('VIEWS', PROTECTED_DIR . DS . 'Views');
 
 	
 /*
@@ -45,12 +34,18 @@
  * -------------------------------------------
  *
  */	
- 
- 	require (FRAMEWORK_DIR . DS . 'Vendors/Smarty-3.1.19/libs/Smarty.class.php');
- 	require (FRAMEWORK_DIR . DS . 'Controllers' . DS . 'MainController.php');
- 	require (FRAMEWORK_DIR . DS . 'Libs/Common.php');
  	
- 	spl_autoload_register('__autoload');
+ 	//require_once(FRAMEWORK_DIR . DS . 'Vendors/Smarty-3.1.19/libs/Smarty.class.php');
+ 	require(FRAMEWORK_DIR . DS . 'Controllers' . DS . 'MainController.php');
+ 	require_once(FRAMEWORK_DIR . DS . 'Vendors' . DS . 'Smarty-3.1.19' . DS . 'libs' . DS . 'Smarty.class.php');
+ 	require(FRAMEWORK_DIR . DS . 'Libs/Singleton.php');
+ 	require(FRAMEWORK_DIR . DS . 'Libs/Common.php');
+ 	require(FRAMEWORK_DIR . DS . 'Libs/Authentication.php');
+ 	require_once(FRAMEWORK_DIR . DS . 'Libs' . DS .'MySqlDb.php');
+  	require_once(PROTECTED_DIR . DS . 'Configs/config.php');  
+  	require_once(PROTECTED_DIR . DS . 'Configs/database.php');  	
+  	
+  	spl_autoload_register('__autoload');
  	
  	function __autoload($className) {
 	 	// list of directories to scan
@@ -63,73 +58,44 @@
 			PROTECTED_DIR . DS . 'Libs/',
 			PROTECTED_DIR . DS . 'Libs/Components/',
 			PROTECTED_DIR . DS . 'Helpers/',
-			PROTECTED_DIR . DS . 'Models/'	
+			PROTECTED_DIR . DS . 'Models/',
 		);
+
+
+		// Scan the modules directory for names of existing modules
+		$module_dirs = preg_grep('/^([^.])/', scandir(MODULES_DIR));
 		
+
+		// if the file exists in any of the defined directories, require it...	
 		foreach ($dirs as $d) {
 			if (file_exists("{$d}/{$className}.php")) {
-				require ("{$d}/{$className}.php");
+				require_once ("{$d}/{$className}.php");
 			} elseif (file_exists("{$d}/{$className}Controller.php")) {
-				require ("{$d}/{$className}Controller.php");
+				require_once ("{$d}/{$className}Controller.php");
 			} elseif (file_exists("{$d}/{$className}Component.php")) {
-				require ("{$d}/{$className}Component.php");
+				require_once ("{$d}/{$className}Component.php");
 			} elseif (file_exists("{$d}/{$className}Helper.php")) {
-				require ("{$d}/{$className}Helper.php");
+				require_once ("{$d}/{$className}Helper.php");
+			} else {
+
+				foreach ($module_dirs as $d) {
+					if (file_exists(MODULES_DIR . DS . $d . DS . 'Controllers' . DS . $className.'.php')) {
+						require_once (MODULES_DIR . DS . $d . DS . 'Controllers' . DS . $className.'.php');
+					} elseif (file_exists(MODULES_DIR . DS . $d . DS . 'Models' . DS . $className.'.php')) {
+						require_once (MODULES_DIR . DS . $d . DS . 'Models' . DS . $className.'.php');
+					}
+				}
+
+
 			}
 		}
+		
+		
  	}
 
 	
 	
-	
-	
-	
-	
-/*
-	$df = array();
-
-	foreach ($dirs as $dir) {
-
-		if (is_dir($dir)) {
-			$df = preg_grep('/^([^.])/', scandir($dir));
-		}
 		
-		foreach ($df as $f) {
-			if (strpos($f, '.php')) {
-				require($dir . $f);
-			}
-			
-		}
-	}
-
-	// include the MainController and Model
-	require_once(FRAMEWORK_DIR . DS . 'Controllers' . DS . 'MainController.php');
-	//require_once(FRAMEWORK_DIR . DS . 'Models' . DS . 'Model.php');
-*/
-
-
-/*
- *	Instantiate the database class for use site wide
- */
-	
-
-
-	if (! function_exists('db')) {
-		function db() {
-			global $db;
-			return $db;
-		}
-	}
-
-/*
- *	Include file to establish a database connection.
- *
- */
-
-	require(PROTECTED_DIR . DS . 'Configs' . DS . 'database.php');
-
-
-
 /*
  * -------------------------------------------
  * Instantiate Smarty
@@ -138,34 +104,72 @@
  */
  
 	$smarty = new Smarty();
-	$smarty->setTemplateDir(PROTECTED_DIR . DS . 'Views');
-	$smarty->setCompileDir(PROTECTED_DIR . DS . 'Compile');
-	$smarty->setCacheDir(PROTECTED_DIR . DS . 'Cache');
-	$smarty->setConfigDir(PROTECTED_DIR . DS . 'Configs');
+	$smarty->setTemplateDir(PROTECTED_DIR . DS . 'Views')
+		->setCompileDir(PROTECTED_DIR . DS . 'Compile')
+		->setCacheDir(PROTECTED_DIR . DS . 'Cache')
+		->setConfigDir(PROTECTED_DIR . DS . 'ViewConfigs');
 	
 	$smarty->assign(array(
-		'ROOT' => ROOT,
-		'SITE_URL' => SITE_URL
+		'appName' => APP_NAME,
+		'root' => ROOT,
+		'siteUrl' => SITE_URL,
+		'css' => CSS,
+		'images' => IMAGES,
+		'js' => JS,
+		'files' => FILES,
+		'views' => VIEWS,
+		'flashMessages' => ''
 	));
 	
+	
+		
 	$smarty->escape_html = true;
  
-
-
 /*
  * Include any additional variables to be available globally
  * 
  */
-
-
-/*
-if (! function_exists ('session')) {
-	function session() {
-		global $session;
-		return $session;
+ 
+ 	$error_messages = array();
+ 	global $error_messages;
+ 	
+ 	$success_messages = array();
+ 	global $success_messages;
+ 	
+ 	// Instantiate classes
+	
+	
+	
+	if (! function_exists('db')) {
+		function db() {
+			global $db;
+			return $db;
+		}
 	}
-} 
-*/
+
+	session_start();
+	$session = Session::getInstance();
+
+
+	if (! function_exists ('session')) {
+		function session() {
+			global $session;
+			return $session;
+		}
+	} 
+	$smarty->assignByRef('session', $session);
+
+	
+	$auth = Authentication::getInstance();
+	if (! function_exists('auth')) {
+		function auth() {
+			global $auth;
+			return $auth;
+		}
+	}
+	
+	$smarty->assignByRef('auth', $auth);
+
 
 	$input = new Input();
 	if (! function_exists('input')) {
@@ -175,13 +179,14 @@ if (! function_exists ('session')) {
 		}
 	}
 	
-	if (! function_exists('auth')) {
-		function auth() {
-			global $auth;
-			return $auth;
+	$acl = new Acl();
+	if (! function_exists('Acl')) {
+		function Acl() {
+			global $acl;
+			return $acl;
 		}
 	}
-
+	
 
 	if (! function_exists('smarty')) {
 		function smarty() {
@@ -201,7 +206,7 @@ if (! function_exists ('session')) {
 	if (file_exists (FRAMEWORK_DIR . '/Configs/routes.php')) {
 		require (FRAMEWORK_DIR . '/Configs/routes.php');
 	} else {
-		echo "Make sure that /protected/Configs/routes.php exists";
+		echo "Make sure that " . FRAMEWORK_DIR . "/Configs/routes.php exists";
 		exit;
 	}
 

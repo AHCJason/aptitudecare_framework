@@ -8,17 +8,14 @@
 
 
 class MainController {
-	public $content;
-	public $params = array();
-	public $Session;
+
+	public $module;
+	public $page;
+	public $action;
 	
-	public $username;
-	public $fullname;
-	
-	public function __construct() {
-		// Load the session component
-		$this->Session = $this->loadComponent('Session');
+	public function __construct() {			
 		
+							
 		// Load any other components defined in the child class
 		if (!empty($this->components)) {
 			foreach($this->components as $c) {
@@ -38,18 +35,68 @@ class MainController {
 
 	
 	public function loadModel($name) {
-		if (file_exists (PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
-			require (PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');
-			$this->$name = new $name;
-			return $this->$name;
-		}
+		if (file_exists (FRAMEWORK_DIR . DS . 'Models' . DS . $name . '.php')) {
+			require_once (FRAMEWORK_DIR . DS . 'Models' . DS . $name . '.php');
+			
+		} elseif (file_exists (PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
+			require_once (PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');
+		}	
+		
+		$class = new $name;
+		return $class;	
+		
 		
 	}
 
-	public function loadView($folder, $name) {	
-		$this->content = lcfirst($folder) . '/' . $name . '.tpl';
+
+
+	/*
+	 * -------------------------------------------------------------------------
+	 * PAGE VIEW
+	 * -------------------------------------------------------------------------
+	 *
+	 *	Set the content - this is the tpl file fort method which is called in the
+	 *	controller,  then call the default main.tpl file.
+	 *
+	 */
+
+	public function loadView($folder, $name, $module = '') {		
+		smarty()->assign('current_url', $_SERVER['REQUEST_URI']);
+		smarty()->assign('module', $module);
+
+		//Make sure the session is valid and get the user info
+		if (!auth()->isLoggedIn()) {
+			if ($name != 'login') {
+				$this->redirect(array('page' => 'user', 'action' => 'login'));
+			} 
+		} 
+				
+		$this->content = strtolower($folder) . '/' . $name . '.tpl';
+		smarty()->assign('content', strtolower($folder) . '/' . $name . '.tpl');
+
+		$this->page = ucfirst($folder);
+		$this->action = $name;
+		$this->module = $module;
+		
+		
+		if ($module != '') {
+			// Get all the locations for the user
+			$locations = $this->loadModel('Location')->fetchLocations(auth()->getPublicId(), $module);
+			// Get the modules to which the user has access
+			$modules = $this->loadModel('Module')->fetchUserModules(auth()->getPublicId());
+			
+		} else {
+			$locations = '';
+			$modules = '';
+		}
+		
+		
+		smarty()->assign('currentUrl', currentUrl());	
+		smarty()->assign('locations', $locations);
+		smarty()->assign('modules', $modules);
+		
 		// set the base template
-		include(VIEWS . DS . 'main.tpl');
+		smarty()->display('main.tpl');
 	}
 	
 	public function loadElement($name) {
@@ -111,20 +158,48 @@ class MainController {
 	 *
 	 */
 		
-	public static function redirect($url = false, $params = array()) {
-
-		if (!empty($url)) {
-			header('Location: ' . SITE_URL . '/' . $url);
+	public function redirect($params = false) {	
+		if (is_array($params)) {	
+			if (isset($params['module'])) {
+				if (!isset ($params['page'])) {
+					$redirect_url = SITE_URL . "/?module=" . $params['module'];
+				} else {
+					if (isset ($params['action'])) {
+						$redirect_url = SITE_URL . '?module=' . $params['module'] . '&page=' . $params['page'] . '&action=' . $params['action']; 
+					} else {
+						$redirect_url = SITE_URL . '?module=' . $params['module'] . '&page=' . $params['page'];
+					}
+				}
+			} else {	
+				if (isset($params['page'])) {
+					$page = strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $params['page']));
+				} else {
+					$page = 'MainPage';
+				}
+				if (isset($params['action'])) {
+					$action = $params['action'];
+					if ($params['action'] == 'index') {
+						$redirect_url = SITE_URL . "/{$page}";
+					} else {
+						$redirect_url = SITE_URL . "/{$page}/{$action}";
+					}	
+				} else {
+					$redirect_url = SITE_URL . "/{$page}";
+				}
+			}
+		} elseif ($params) {
+			$redirect_url = $params;
 		} else {
-			header('Location: ' . SITE_URL);
+			$redirect_url = SITE_URL;
 		}
+		$this->redirectTo($redirect_url);
 		
 	}	
 	
-	public function error($message) {
-		
+	private function redirectTo($url) {
+		header("Location: " . $url);
 	}
-	
+		
 	
 	
 	/*
