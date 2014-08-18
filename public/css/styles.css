@@ -1,0 +1,640 @@
+html {
+	margin: 0;
+	padding: 0;
+	background: #686868;
+	min-height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+body, td, th {
+	font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+	font-size: 14px;
+	color: #050505;
+}
+
+h1, h2 {
+	text-align: center;
+}
+
+h2, h3 {
+	font-weight: normal;
+}
+
+a {
+	color: #050505;
+	text-decoration: none;
+}
+
+
+/********* General Site-wide Items **************/
+
+div#search-header {
+	height: 18px;
+	margin-bottom: 25px;
+}
+
+div#modules {
+	position: absolute;
+	top: 30px;
+}
+
+div#patient-search {
+	position: absolute;
+	right: 15px;
+	top: 30px;
+}
+
+div#locations {
+	position: absolute;
+}
+
+div#date-header {
+	margin: 0 auto;
+	width: 60%;
+	max-width: 550px;
+}
+
+div#date-header h2 {
+	margin: 0;
+}
+
+.date-header-img {
+	width: 10%;
+	float: left;
+}
+
+.date-header-text-center {
+	width: 80%;
+	float: left;
+}
+
+table.form-table {
+	width: auto;
+	max-width: 80%;
+	margin: 20px auto;
+	text-align: left;
+	font-weight: normal;
+}
+
+table.form-table th {
+	background: #ccc;
+	width: 100%;
+	padding: 5px 15px;
+	text-align: center;
+	font-weight: bold;
+}
+
+
+table.form-table td {
+	padding: 5px 4px;
+}
+
+/******** General Use Classes *************/
+
+.clear { clear: both; }
+.left { float: left; }
+.right { float: right; }
+.text-center { text-align: center; }
+.no-margin { margin: 0; }
+.link { text-decoration: underline; font-size: 12px; }
+
+.text-10 { font-size: 10px; }
+.text-11 { font-size: 11px; }
+.text-12 { font-size: 12px; }
+.text-13 { font-size: 13px; }
+.text-14 { font-size: 14px; }
+.text-15 { font-size: 15px; }
+.text-16 { font-size: 16px; }
+.text-17 { font-size: 17px; }
+.text-18 { font-size: 18px; }
+.text-19 { font-size: 19px; }
+.text-20 { font-size: 20px; }
+.text-21 { font-size: 21px; }
+.text-22 { font-size: 22px; }
+.text-23 { font-size: 23px; }
+.text-24 { font-size: 24px; }
+
+
+
+.patient-menu {
+	position: absolute;
+	margin-left: 8px;
+	margin-top: -2px;
+}
+
+
+
+
+
+/*********** Buttons and other useful items ************/
+
+img.add-button {
+	position: absolute;
+	margin-left: 2px;
+}
+
+
+
+
+
+/******* Main Template **********/
+
+div#header-container {
+	width: 100%;
+	height: 92px;
+	background: url(/aptitude-public/img/header-bg.png) repeat-x bottom center;
+	position: relative;
+	float: left;
+	top: 0;
+	z-index: 49;
+}
+
+div#header {
+	width: 92%;
+	/*height: 125px;*/
+	height: 92px;
+	margin: 0 auto;
+	position: relative;
+	z-index: 50;
+}
+
+img.logo {
+	/*margin: 22px 0px 0px 30px;*/
+	margin: 24px 0px 0px 20px;
+	float: left;
+}
+
+div#user-info {
+	float: right;
+	color: #f1f1f1;
+	padding: 3px 18px 0px 8px;
+	height: 20px;
+}
+
+div#user-info a {
+	color: #f1f1f1;
+	text-decoration: none;
+}
+
+div#user-info a:hover {
+	
+}
+
+
+nav {
+	float: right;
+	text-align: right;
+	margin: 52px 1px 0px 0px;
+	position: absolute;
+	right: 10px;
+	z-index: 51;
+}
+
+nav ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	float: right;
+}
+
+nav ul li {
+	width: 75px;
+	text-align: center;
+	margin: 0px 0px 0px 5px;
+	padding: 4px 8px 4px 8px;
+	display: block;
+	float: left;
+	background: #f1f1f1;
+	border-top: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	font-size: 14px;
+	border-top-left-radius: 3px;
+	-moz-border-radius-topleft: 3px;
+	border-top-right-radius: 3px;
+	-moz-border-radius-topright: 3px;
+}
+
+nav ul li:hover {
+	background: #fff;
+}
+
+nav ul li a {
+	color: #050505;
+	text-decoration: none;
+}
+
+nav ul li ul {
+/* 	right: -999em; */
+	display: none;
+	margin: 4px 0px 0px -92px;
+	padding: 6px 12px;
+	background: #fff;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	float: none;
+	position: relative;
+	z-index: 100;
+	width: 150px;
+}
+
+nav li:hover ul {
+	right: auto;
+	display: block;
+}
+
+nav ul li ul li {
+	margin: 0;
+	padding: 5px 4px;
+	display: block;
+	position: relative;
+	border: none;
+	float: none;
+	background: #fff;
+	text-align: left;
+	white-space: nowrap;
+	font-size: 12px;
+	width: 118px;
+	border-radius: none;
+}
+
+div #nav ul li ul li a:hover {
+	color: #fff;
+}
+
+div #nav ul li ul li a {
+	display: block;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+nav ul li ul li:hover {
+	background: #185687;
+	padding: 5px;
+	border-radius: 0;
+	display: block;
+	color: #fff;
+	width: 100%;
+	height: 22px;
+
+}
+
+nav ul li ul li:hover a {
+	color: inherit;
+	border-radius: 0;
+	display: block;
+	width: 100%;
+	height: 22px;
+}
+
+
+nav ul li ul li:last-child {
+	margin-bottom: 0;
+}
+
+
+
+/* Grey Small Dropdown */
+
+/* General dropdown styles */
+.dropdown { 
+	position: relative; 
+	float: right;
+	top: -2px;
+	right: 15px;
+	z-index: 500; 
+	margin: 0; 
+}
+
+.dropdown dl {
+	 margin-left: 0px; 
+	 position: relative; 
+}
+
+.dropdown dd, .dropdown dt, .dropdown ul { 
+	margin:0px; 
+	padding:0px; 
+	margin-left:0px;
+}
+
+.dropdown dd { 
+	position:relative;
+}
+
+/* DT styles for sliding doors */
+.dropdown dt a {
+	background: url(/aptitude-public/img/tools.png);
+    position: absolute; 
+    width:16px; 
+    height:16px; 
+    cursor: pointer; 
+    margin: 0px 5px 0px 0px;
+}
+
+
+/* UL styles */
+.dropdown dd ul { 
+	background:rgba(0,0,0,0.5) none repeat scroll 0 0; 
+    list-style: none; 
+    padding: 3px 0; 
+    display: none;
+    position: absolute;
+    margin: 20px 0 0 -50px;
+    width: auto; 
+    border: 1px solid #656565; 
+    cursor: pointer; 
+    z-index: 501; 
+    border-radius: 3px;
+}
+.dropdown dd ul li {
+	margin: 0; 
+	width:224px;
+}
+
+.dropdown span.value { 
+	display:none;
+}
+
+.dropdown dd ul li a { 
+	display: block; 
+	font-weight: normal; 
+	font-style: normal; 
+	width: auto; 
+	text-align:left; 
+	overflow:hidden; 
+	padding: 1px 4px 1px 19px; 
+	margin: 2px 5px;
+	color:#ffffff; 
+	text-decoration:none; 
+	font-size: 12px; 
+	line-height: 1.5em; 
+}
+
+.dropdown dd ul li a:hover { 
+	background: #ffffff; 
+	color: #333; 
+	text-decoration: none; 
+}
+
+.dropdown dd ul li a:visited { 
+	text-decoration:none; 
+}
+
+
+
+
+/******************** Main page template (this is used on all pages in the application) ***********/
+
+
+div#wrapper {
+	width: 92%;
+	min-height: 100%;
+	margin: 0 auto 25px auto;
+	position: absolute;
+	top: 92px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+div#content {
+	width: 96%;
+	min-height: 100%;
+	margin-top: -10px;
+	padding: 10px 2% 30px 2%;
+	position: relative;
+	z-index: 1;
+	background: #f1f1f1;
+}
+
+div#page-content {
+	margin: 0;
+	height: 100%;
+	width: 100%;
+	position: relative;
+}
+
+div#copyright {
+	width: 96%;
+	height: 15px;
+	margin: 0 auto;
+	text-align: right;
+	color: #b4b4b4;
+	position: absolute;
+	border-top: 1px solid #ccc;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 20;
+	font-size: 12px;
+}
+
+div#copyright p {
+	margin: 15px;
+}
+
+div#copyright a {
+	color: #b4b4b4;
+}
+
+div#copyright a:hover {
+	color: #ff8339;
+}
+
+
+
+
+/********** Login Page *****************/
+
+div#login-box {
+	width: 300px;
+	min-height: 150px;
+	position: relative;
+	height: auto;
+	color: #ffffff;
+	border: 2px solid #333;
+	border-radius: 1em;
+	-webkit-border-radius: 1em;
+	-moz-border-radius: 1em;
+	margin: 25px auto 0px auto;
+	padding: 20px 20px 20px 20px;
+	background-color: #185687;
+	/*-moz-box-shadow: 0 0 5px 5px #888;
+	-webkit-box-shadow: 0 0 5px 5px #888;*/
+	box-shadow: 25px 25px 25px 5px rgba(0,0,0,0.5);
+}
+
+div#login-box h2 {
+	color: #ffffff;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+div#login-box td {
+	color: #ffffff;
+}
+
+div#login-box input[type="text"], input[type="password"] {
+	background: #ffffff;
+	color: #333;
+	width: 200px;
+}
+
+
+
+
+/****************** Dashboard Page *******************/
+
+div#location-wrapper {
+	position: relative;
+	width: 100%;
+	margin: 25px auto;
+}
+
+div.location-container {
+	width: 14.2857143%;
+	min-height: 100px;
+	float: left;
+}
+
+div.location-day-box {
+	height: auto !important;
+	min-height: 100px;
+	border-radius: 3px;
+	padding: 5%;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	background: none;
+}
+
+div.location-day-box-color {
+	background-color: #e6e6e6;
+}
+
+div.location-admit {
+	background: #75dc6d;
+	font-size: 11px;
+	line-height: 12px;
+	border-radius: 3px;
+	padding: 5px;
+	margin-top: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
+div.location-admit-pending {
+	background: #6BBEFF;
+	font-size: 11px;
+	line-height: 12px;
+	border-radius: 3px;
+	padding: 5px;
+	margin-top: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
+.box-title {
+	margin: 0 0 4px 2px;
+	color: #868686;
+}
+
+.day-title {
+	font-size: 12px;
+	font-weight: bold;
+	padding-left: 4%;
+	color: #444;
+}
+
+
+
+/*********** Errors *********************/
+
+#flash-messages {
+	position: relative;
+	margin: 0 auto 5px auto;
+	font-size: 14px;
+	max-width: 70%;
+	width: auto;
+	color: #f1f1f1;
+	text-align: center;
+}
+
+.error {
+	background: #c31e1e;
+	margin: 2px auto;
+	padding: 5px 15px;
+	width: auto;
+	text-align: left;
+}
+
+.success {
+	background: #157415;
+	margin: 2px auto;
+	padding: 5px 15px;
+	width: auto;
+	text-align: left;
+}
+
+#flash-messages ul {
+	list-style-type: square;
+}
+
+div#debug {
+	position: fixed:
+	bottom: 0;
+	width: 100%;
+}
+
+
+
+/********* Form inputs, dropdowns, and button styling ***************/
+
+select {
+	border: 1px solid #c8c8c8;
+	height: 25px;
+	background: #fff;
+}
+
+#search-header select {
+	background: #f2f2f2;
+}
+
+input[type=text] {
+	line-height: 18px;
+	background: #fff;
+	border: 1px solid #c8c8c8;
+	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+	font-size: 14px;
+	padding: 2px 4px;
+}
+
+input[type=submit] {
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	background-color: #666;
+	color: #f1f1f1;
+}
+
+
+input[type="submit"], input[type="button"] {
+	padding: 5px 8px;
+	color: #fff;
+	text-decoration: none;
+	background: #929292;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	border: none;
+	outline: none;
+	cursor: pointer;
+}

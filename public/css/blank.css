@@ -1,0 +1,26 @@
+html {
+	margin: 0;
+	padding: 0;
+	background: #ffffff;
+	min-height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+body, td, th {
+	font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+	font-size: 14px;
+	color: #050505;
+}
+
+h1, h2 {
+	text-align: center;
+}
+
+h2, h3 {
+	font-weight: normal;
+}

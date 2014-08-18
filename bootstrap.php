@@ -3,15 +3,23 @@
 /*
  *	Set site directories
  */
+
  	
-	define('CSS', SITE_URL . DS . 'css/');
-	define('IMAGES', SITE_URL . DS . 'img/');
-	define('JS', SITE_URL . DS . 'js/');
-	define('FILES', SITE_URL . DS . 'files/');
-	define('FONTS', SITE_URL . DS . 'fonts/');
-	define('VIEWS', PROTECTED_DIR . DS . 'Views');
+	define('CSS', SITE_URL . DS . 'css');
+	define('IMAGES', SITE_URL . DS . 'img');
+	define('JS', SITE_URL . DS . 'js');
+	define('FILES', SITE_URL . DS . 'files');
+	define('FONTS', SITE_URL . DS . 'fonts');
+	define('VIEWS', APP_PROTECTED_DIR . DS . 'Views');
+
+	// Framework directories
+	define('FRAMEWORK_URL', SITE_URL . DS . 'aptitude-public');
+	define('FRAMEWORK_CSS', FRAMEWORK_URL . DS . 'css');
+	define('FRAMEWORK_IMAGES', FRAMEWORK_URL . DS . 'img');
+	define('FRAMEWORK_JS', FRAMEWORK_URL . DS . 'js');
 
 	
+
 /*
  * Error Reporting
  *
@@ -35,30 +43,30 @@
  *
  */	
  	
- 	//require_once(FRAMEWORK_DIR . DS . 'Vendors/Smarty-3.1.19/libs/Smarty.class.php');
- 	require(FRAMEWORK_DIR . DS . 'Controllers' . DS . 'MainController.php');
- 	require_once(FRAMEWORK_DIR . DS . 'Vendors' . DS . 'Smarty-3.1.19' . DS . 'libs' . DS . 'Smarty.class.php');
- 	require(FRAMEWORK_DIR . DS . 'Libs/Singleton.php');
- 	require(FRAMEWORK_DIR . DS . 'Libs/Common.php');
- 	require(FRAMEWORK_DIR . DS . 'Libs/Authentication.php');
- 	require_once(FRAMEWORK_DIR . DS . 'Libs' . DS .'MySqlDb.php');
-  	require_once(PROTECTED_DIR . DS . 'Configs/config.php');  
-  	require_once(PROTECTED_DIR . DS . 'Configs/database.php');  	
+ 	//require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors/Smarty-3.1.19/libs/Smarty.class.php');
+ 	require(FRAMEWORK_PROTECTED_DIR . DS . 'Controllers' . DS . 'MainController.php');
+ 	require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors' . DS . 'Smarty-3.1.19' . DS . 'libs' . DS . 'Smarty.class.php');
+ 	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Singleton.php');
+ 	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Common.php');
+ 	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Authentication.php');
+ 	require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Libs' . DS .'MySqlDb.php');
+  	require_once(APP_PROTECTED_DIR . DS . 'Configs/config.php');  
+  	require_once(APP_PROTECTED_DIR . DS . 'Configs/database.php');  	
   	
   	spl_autoload_register('__autoload');
  	
  	function __autoload($className) {
 	 	// list of directories to scan
 		$dirs = array(
-			FRAMEWORK_DIR . DS . 'Controllers',
-			FRAMEWORK_DIR . DS . 'Libs/',
-			FRAMEWORK_DIR . DS . 'Libs/Components/',
-			FRAMEWORK_DIR . DS . 'Models/',
-			PROTECTED_DIR . DS . 'Controllers/',
-			PROTECTED_DIR . DS . 'Libs/',
-			PROTECTED_DIR . DS . 'Libs/Components/',
-			PROTECTED_DIR . DS . 'Helpers/',
-			PROTECTED_DIR . DS . 'Models/',
+			FRAMEWORK_PROTECTED_DIR . DS . 'Controllers',
+			FRAMEWORK_PROTECTED_DIR . DS . 'Libs/',
+			FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Components/',
+			FRAMEWORK_PROTECTED_DIR . DS . 'Models/',
+			APP_PROTECTED_DIR . DS . 'Controllers/',
+			APP_PROTECTED_DIR . DS . 'Libs/',
+			APP_PROTECTED_DIR . DS . 'Libs/Components/',
+			APP_PROTECTED_DIR . DS . 'Helpers/',
+			APP_PROTECTED_DIR . DS . 'Models/',
 		);
 
 
@@ -104,15 +112,19 @@
  */
  
 	$smarty = new Smarty();
-	$smarty->setTemplateDir(PROTECTED_DIR . DS . 'Views')
-		->setCompileDir(PROTECTED_DIR . DS . 'Compile')
-		->setCacheDir(PROTECTED_DIR . DS . 'Cache')
-		->setConfigDir(PROTECTED_DIR . DS . 'ViewConfigs');
+	$smarty->setTemplateDir(APP_PROTECTED_DIR . DS . 'Views')
+		->setCompileDir(APP_PROTECTED_DIR . DS . 'Compile')
+		->setCacheDir(APP_PROTECTED_DIR . DS . 'Cache')
+		->setConfigDir(APP_PROTECTED_DIR . DS . 'ViewConfigs');
 	
 	$smarty->assign(array(
 		'appName' => APP_NAME,
 		'root' => ROOT,
 		'siteUrl' => SITE_URL,
+		'frameworkUrl' => FRAMEWORK_URL,
+		'frameworkCss' => FRAMEWORK_CSS,
+		'frameworkImg' => FRAMEWORK_IMAGES,
+		'frameworkJs' => FRAMEWORK_JS,
 		'css' => CSS,
 		'images' => IMAGES,
 		'js' => JS,
@@ -178,6 +190,7 @@
 			return $input;
 		}
 	}
+	$smarty->assignByRef('input', $input);
 	
 	$acl = new Acl();
 	if (! function_exists('Acl')) {
@@ -203,10 +216,10 @@
 
  
   
-	if (file_exists (FRAMEWORK_DIR . '/Configs/routes.php')) {
-		require (FRAMEWORK_DIR . '/Configs/routes.php');
+	if (file_exists (FRAMEWORK_PROTECTED_DIR . '/Configs/routes.php')) {
+		require (FRAMEWORK_PROTECTED_DIR . '/Configs/routes.php');
 	} else {
-		echo "Make sure that " . FRAMEWORK_DIR . "/Configs/routes.php exists";
+		echo "Make sure that " . FRAMEWORK_PROTECTED_DIR . "/Configs/routes.php exists";
 		exit;
 	}
 
