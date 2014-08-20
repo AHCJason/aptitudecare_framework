@@ -8,7 +8,11 @@ class Input {
 
 	public function __construct() {
 		foreach ($_REQUEST as $key => $value) {
-			if (isset ($_POST[$key])) {
+			if (is_array($value)) {
+				foreach ($value as $k => $v) {
+					$this->$key->$k = stripslashes($v);
+				}
+			} elseif (isset ($_POST[$key])) {
 				$this->$key = stripslashes($value);
 			} elseif (isset ($_GET[$key])) {
 				$this->$key = stripslashes($value);

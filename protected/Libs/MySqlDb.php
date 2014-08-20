@@ -45,7 +45,8 @@ class MySqlDb {
 		$stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, $className);
 
 		$result = $stmt->fetchAll();	
-		$this->checkPublicId($result, $class->table);
+		$table = $class->fetchTable();
+		$this->checkPublicId($result, $table);
 
 		return $result;
 	}
@@ -58,8 +59,21 @@ class MySqlDb {
 		$stmt->setFetchMode(PDO::FETCH_CLASS, $className);
 		
 		$result = $stmt->fetch();
-		$this->checkPublicId($result, $class->table);
+		if (method_exists($class, 'fetchTable')) {
+			$table = $class->fetchTable();
+		} else {
+			$table = null;
+		}
+		
+		$this->checkPublicId($result, $table);
 		return $result;
+	}
+
+	public function fetchColumns($sql, $params, $class) {
+		$conn = $this->getConnection();
+		$stmt = $conn->prepare($sql);
+		$stmt->execute($params);
+		return $stmt->fetchAll(PDO::FETCH_COLUMN);
 	}
 	
 	public function update($sql, $params) {
@@ -69,8 +83,7 @@ class MySqlDb {
 	}
 
 	public function saveRow($data) {
-		$table = $data->table;
-		unset($data->table);
+		$table = $data->fetchTable();
 		$numOfItems = count((array)$data);
 		$count = 1;
 
@@ -89,7 +102,7 @@ class MySqlDb {
 			}
 			
 		}
-
+		$sql = trim($sql, ', ');
 		$sql .= ") VALUES (";
 		$count = 1;
 
@@ -108,6 +121,8 @@ class MySqlDb {
 			
 		}
 
+
+		$sql = trim($sql, ", ");
 		$sql .= ")";
 		
 		$conn = $this->getConnection();
@@ -163,7 +178,7 @@ class MySqlDb {
 		} else {
 			foreach ($array as $r) {
 				if (is_object($r)) {
-					if ($r->public_id == '') {
+					if (isset ($r->public_id) && $r->public_id == '') {
 						$r->public_id = getRandomString();
 						$this->updatePublicId($r, $tables);
 					}
@@ -214,24 +229,32 @@ class MySqlDb {
 
 	public function setDataStamps($data) {
 		//	Check for public id
+		
 		if ($data->public_id == '') {
+			echo 1;
 			$data->public_id = getRandomString();
 		}
 		
-		if ($data->datetime_created == null || $data->datetime_created == '0000-00-00 00:00:00') {
-			$data->datetime_created = mysql_datetime();
-		}
+		if (isset ($data->datetime_created)) {
+			if ($data->datetime_created == null || $data->datetime_created == '0000-00-00 00:00:00') {
+				$data->datetime_created = mysql_datetime();
+			}
+		} 
 		
-		$data->datetime_modified = mysql_datetime();
+		if (isset ($data->datetime_modified)) {
+			$data->datetime_modified = mysql_datetime();
+		}				
 
 		//	Get user data from the session
-		$user = auth()->loadRecord();
+		$user = auth()->getRecord();
 
-		if ($data->user_created == '' || $data->user_created == 0) {
+		if (isset ($data->user_created) && ($data->user_created == '' || $data->user_created == 0)) {
 			$data->user_created = $user->id;
 		}
 
-		$data->user_modified = $user->id;
+		if (isset ($data->user_modified)) {
+			$data->user_modified = $user->id;
+		}
 
 		return $data;
 	}

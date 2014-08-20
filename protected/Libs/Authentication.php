@@ -104,7 +104,7 @@ class Authentication extends Singleton {
 	 *
 	 */
 	
-	public function loadRecord() {
+	private function loadRecord() {
 		if ($this->valid()) {
 			$record = $this->fetchUserByName($this->record->email);
 			
@@ -119,6 +119,31 @@ class Authentication extends Singleton {
 		}
 		
 		
+	}
+
+	public function is_admin() {
+		$user = $this->loadRecord();
+		if ($user->group_id <= 1) {
+			return true;
+		} 
+
+		return false;
+
+	}
+
+	public function has_permission($action = false, $type = false) {
+
+		//	Only allow facility administrators to add new users
+		if ($type == 'site_users') {
+			if ($this->is_admin()) {
+				return true;
+			}
+			return false;
+		} else {
+
+			//	For now we will allow access to all other page types
+			return true;
+		}
 	}
 	
 	
@@ -186,6 +211,19 @@ class Authentication extends Singleton {
 	public function fullName() {
 		return $this->record->first_name . ' ' . $this->record->last_name;
 	}
+
+
+
+
+	/*
+	 * -------------------------------------------------------------------------
+	 *  ENCRYPT PASSWORD
+	 * -------------------------------------------------------------------------
+	 */
+
+	public function encrypt_password($password) {
+		return password_hash($password, PASSWORD_DEFAULT);
+	}
 	
 		
 	
@@ -199,7 +237,7 @@ class Authentication extends Singleton {
 		
 	public function login($username, $password) {
 		// Need to salt and encrypt password
-		$enc_password = password_hash($password, PASSWORD_DEFAULT);
+		$enc_password = $this->encrypt_password($password);
 										
 		// Check database for username and password	
 		$this->record = $this->fetchUserByName($username);

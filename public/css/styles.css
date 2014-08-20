@@ -17,6 +17,10 @@ body, td, th {
 	color: #050505;
 }
 
+h1 {
+	margin: 25px 0;
+}
+
 h1, h2 {
 	text-align: center;
 }
@@ -51,6 +55,32 @@ div#patient-search {
 
 div#locations {
 	position: absolute;
+}
+
+div.button {
+	position: absolute;
+	top: 30px;
+	
+}
+
+div.button.left {
+	left: 25px;
+}
+
+div.button.right {
+	right: 25px;
+}
+
+div.button > a {
+	background: #686868;
+	border-radius: 3px;
+	color: #f1f1f1;
+	padding: 6px 8px;
+}
+
+div.button > a:hover {
+	background: #999;
+	color: #000;
 }
 
 div#date-header {
@@ -91,7 +121,7 @@ table.form-table th {
 
 
 table.form-table td {
-	padding: 5px 4px;
+	padding: 5px 10px;
 }
 
 /******** General Use Classes *************/
@@ -569,7 +599,7 @@ div.location-admit-pending {
 	text-align: center;
 }
 
-.error {
+#flash-messages.error {
 	background: #c31e1e;
 	margin: 2px auto;
 	padding: 5px 15px;
@@ -577,7 +607,7 @@ div.location-admit-pending {
 	text-align: left;
 }
 
-.success {
+#flash-messages.success {
 	background: #157415;
 	margin: 2px auto;
 	padding: 5px 15px;
@@ -587,6 +617,13 @@ div.location-admit-pending {
 
 #flash-messages ul {
 	list-style-type: square;
+}
+
+/*** Validation errors **/
+.error {
+	margin-left: 10px;
+	background: #e64d3d;
+	padding: 4px 6px;
 }
 
 div#debug {
@@ -609,7 +646,7 @@ select {
 	background: #f2f2f2;
 }
 
-input[type=text] {
+input[type=text], input[type=password] {
 	line-height: 18px;
 	background: #fff;
 	border: 1px solid #c8c8c8;

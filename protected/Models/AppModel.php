@@ -35,21 +35,34 @@ class AppModel {
 		}
 	}
 
-	public function save($data = array()) {
+	public function fetchAllData() {
+		$table = $this->fetchTable();
+		$sql = "SELECT `{$table}`.* FROM `{$table}`";
+		$params = array();
+
 		try {
-			if (empty ($data)) {
-				if ($this->id != '') {
+			return db()->fetchRows($sql, $params, $this);
+		} catch (PDOException $e) {
+			echo $e;
+		}
+
+	}
+
+	public function save($data = false) {
+		try {
+			if ($data) {
+				pr ($data);
+				if (!isset ($this->id) || $this->id != '') {
 					db()->updateRow($this);
 				} else {
-					db()->saveRow($this);
+					return db()->saveRow($this);
 				}
 				
 			} else {
-				$data->table = $this->table;
-				if ($data->id != '') {
-					db()->updateRow($data);
+				if (isset ($this->id) && $this->id != '') {
+					db()->updateRow($this);
 				} else {
-					db()->saveRow($data);
+					return db()->saveRow($this);
 				}
 				
 			}
@@ -100,6 +113,19 @@ class AppModel {
 	}
 
 
+	public function fetchFields() {
+		return $this->_manage_fields;
+	}
+
+	public function fetchTable() {
+		return $this->table;
+	}
+
+	public function fetchColumnsToInclude() {
+		return $this->_add_fields;
+	}
+
+
 	/*
 	 * -------------------------------------------------------------------------
 	 *  FETCH ALL DATA FOR MANAGE PAGE
@@ -110,30 +136,45 @@ class AppModel {
 		if (isset (input()->type)) {
 			$model = ucfirst(camelizeString(depluralize(input()->type)));
 			$class = new $model;
-			$sql = "SELECT `{$class->table}`.*";
+			$table = $class->fetchTable();
+			$sql = "SELECT `{$table}`.*";
 			$i = 1;
 			if (isset ($class->belongsTo)) {
-				$count = count($class->belongsTo);
 				foreach ($class->belongsTo as $k => $b) {
-					$linkClass = new $k;
-					if (isset ($class->belongsTo[$k]['join_field'])) {
-						foreach ($class->belongsTo['join_field'] as $f) {
-							pr ($f);
-							$sql .= ", `{$b['table']}`.`{$f['join_field']['column']}` AS {$f['join_field']['name']}";
-							
-						}
-						
-					} 
-					$sql .= " {$b['join_type']} JOIN `{$b['table']}` ON `{$b['table']}`.`{$b['foreign_key']}` = `{$class->table}`.`{$b['inner_key']}`";
+					if (isset ($b['join_field'])) {
+						$sql .= ", `{$b['table']}`.`{$b['join_field']['column']}` AS {$b['join_field']['name']} ";
+					}
+					
+				}
+
+				$sql .= " FROM `{$table}`";
+
+				foreach ($class->belongsTo as $k => $b) {
+					$sql .= " {$b['join_type']} JOIN `{$b['table']}` ON `{$b['table']}`.`{$b['foreign_key']}` = `{$table}`.`{$b['inner_key']}`";
 				}
 			} else {
-				$sql .= " FROM `{$class->table}`";
+				$sql .= " FROM `{$table}`";
 			}
-			echo $sql; die();
+
 			return $this->fetchAll($sql);
 		}
 
 		return false;
+	}
+
+
+	public function fetchColumnNames() {
+		$called_class = get_called_class();
+		$class = new $called_class;
+		$table = $class->fetchTable();
+		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`=:dbname AND `TABLE_NAME`=:table";
+		$params[':table'] = $table;
+		$params[':dbname'] = db()->dbname;
+		try {
+			return db()->fetchColumns($sql, $params, $class);
+		} catch (PDOException $e) {
+			echo $e;
+		}
 	}
 	
 	

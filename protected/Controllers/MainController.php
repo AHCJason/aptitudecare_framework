@@ -47,7 +47,8 @@ class MainController {
 		if (class_exists($name)) {
 			$class = new $name;
 		} else {
-			echo "Could not find class {$name}";
+			smarty()->assign('message', "Could not find the class {$name}");
+			$this->loadView('error', 'index');
 			exit;
 		}
 		
@@ -79,13 +80,15 @@ class MainController {
 		//	Make sure the session is valid and get the user info
 		//	Re-direction is failing here, for some reason we are not passing the 
 		//	auth()->isLoggedIn() test
-
 		if (!auth()->isLoggedIn()) {
 			if ($folder != 'login') {
 				$this->redirect(array('page' => 'login', 'action' => 'index'));
 			} 
 		} 
 
+
+		//	If the module is specified in the url we will look in the module directory first for the view file.
+		//	If it is not there we will look next in the default view directory.
 		if ($module != '') {
 			$this->module = $module;
 			if (file_exists(MODULES_DIR . DS . $module . DS . 'Views/' . underscoreString($folder) . DS . $name . '.tpl')) {
@@ -93,11 +96,19 @@ class MainController {
 			} else {
 				smarty()->assign('content', underscoreString($folder) . '/' . $name . '.tpl');
 			}
-			
+		
+		//	If no module is set then we will get the content from the default view directory.
+		//	!!!!!! TO-DO: Probably should check if the file exists and if not show a pretty error page. !!!!!!!!!!!
 		} else {
 			$this->module = '';
-			smarty()->assign('content', underscoreString($folder) . '/' . $name . '.tpl');
+			if (file_exists (VIEWS . DS . underscoreString($folder) . DS . $name . '.tpl')) {
+				smarty()->assign('content', underscoreString($folder) . '/' . $name . '.tpl');
+			} else {
+				smarty()->assign('content', "error/no-template.tpl");
+			}
+			
 		}
+
 		
 		if ($this->helper != null) {
 			$helper = $this->loadHelper($this->helper, $this->module);
@@ -230,7 +241,12 @@ class MainController {
 					if ($params['action'] == 'index') {
 						$redirect_url = SITE_URL . "/{$page}";
 					} else {
-						$redirect_url = SITE_URL . "/{$page}/{$action}";
+						if (isset ($params['type'])) {
+							$type = $params['type'];
+							$redirect_url = SITE_URL . "/?page={$page}&action={$action}&type={$type}";
+						} else {
+							$redirect_url = SITE_URL . "/?page={$page}&action={$action}";
+						}
 					}	
 				} else {
 					$redirect_url = SITE_URL . "/{$page}";
@@ -353,6 +369,7 @@ class MainController {
 		
 		smarty()->assign('title', "Manage {$pageTitle}");
 		smarty()->assign('headerTitle', $pageTitle);
+		smarty()->assign('type', input()->type);
 
 		$class = $this->loadModel($dataModel)->fetchManageData();
 		$classArray[0] = array();
@@ -360,7 +377,7 @@ class MainController {
 			foreach ($class as $key => $value) {
 				foreach ($value as $k => $v) {
 					$classArray[$key][$k] = $v;
-					if (!in_array($k, $value->_manage_fields)) {
+					if (!in_array($k, $value->fetchFields())) {
 						unset($classArray[$key][$k]); 		
 					}
 					
@@ -372,9 +389,22 @@ class MainController {
 		smarty()->assign('data', $classArray);
 	}
 
-	public function add() {
 
-	}
+
+
+
+	/*
+	 * -------------------------------------------------------------------------
+	 * 	ADD NEW DATA ITEM
+	 * -------------------------------------------------------------------------
+	 *
+	 * 	NOTE:  Each of the items on the data tab use this function, although there
+	 *	is some specific functionality for each item type.  This may need to be
+	 * 	separated out into individual add functions for each data class.
+	 *
+	 */
+
+
 
 	public function edit() {
 
