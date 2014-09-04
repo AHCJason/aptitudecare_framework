@@ -4,9 +4,13 @@ class MySqlDb {
 
 	private $db;
 	public $username;
+	public $username2;
 	public $password;
+	public $password2;
 	public $dbname;
+	public $dbname2;
 	public $host;
+	public $host2;
 
 	
 	public function __construct() {
@@ -17,6 +21,9 @@ class MySqlDb {
 		try {
 			$conn = new PDO("mysql:host={$this->host};dbname={$this->dbname}", $this->username, $this->password);
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			$conn2 = new PDO("mysql:host={$this->host2};dbname={$this->dbname2}", $this->username, $this->password);
+			$conn2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $e) {
 			echo "ERROR: " . $e->getMessage();
 		}
@@ -36,18 +43,20 @@ class MySqlDb {
 	 */
 	 
 	public function fetchRows($sql, $params, $class) {
+		$className = get_class($class);
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);
 		$stmt->execute($params);
-
-		$className = get_class($class);
-
 		$stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, $className);
+		$result = $stmt->fetchAll();
 
-		$result = $stmt->fetchAll();	
+		// Get the table name for the called class	
 		$table = $class->fetchTable();
-		$this->checkPublicId($result, $table);
-
+		//	Check if the public_id already has a value
+		if ($className != 'AdmissionDashboard') {
+			$this->checkPublicId($result, $table);
+		}
+		
 		return $result;
 	}
 	
@@ -64,8 +73,12 @@ class MySqlDb {
 		} else {
 			$table = null;
 		}
+
+		if (!empty ($result)) {
+			$this->checkPublicId($result, $table);
+		}
+
 		
-		$this->checkPublicId($result, $table);
 		return $result;
 	}
 
@@ -75,8 +88,26 @@ class MySqlDb {
 		$stmt->execute($params);
 		return $stmt->fetchAll(PDO::FETCH_COLUMN);
 	}
+
+	public function fetchCount($table) {
+		$sql = "SELECT count('id') AS items FROM `{$table}`";
+		$conn = $this->getConnection();
+		$stmt = $conn->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetch(PDO::FETCH_ASSOC);
+	}
 	
 	public function update($sql, $params) {
+		$conn = $this->getConnection();
+		$stmt = $conn->prepare($sql);
+		$stmt->execute($params);
+	}
+
+	public function destroy($data) {
+		$table = $data->fetchTable();
+		$sql = "DELETE FROM `{$table}` WHERE `{$table}`.`public_id`=:id";
+		$params[':id'] = $data->public_id;
+
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);
 		$stmt->execute($params);
@@ -87,7 +118,15 @@ class MySqlDb {
 		$numOfItems = count((array)$data);
 		$count = 1;
 
-		$dataSet = $this->setDataStamps($data);
+
+		if (isset ($data->public_id)) {
+			$dataSet = $this->setDataStamps($data);
+		}  else {
+			//	Added this because new patients were not being assigned a publid_id
+			//	however this may break other functionality
+			$data->public_id = '';
+			$dataSet = $this->setDataStamps($data);
+		}
 
 		$sql = "INSERT INTO {$table} (";
 		foreach ($dataSet as $k => $d) {
@@ -121,10 +160,9 @@ class MySqlDb {
 			
 		}
 
-
 		$sql = trim($sql, ", ");
 		$sql .= ")";
-		
+
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);
 		$stmt->execute($params);
@@ -134,8 +172,7 @@ class MySqlDb {
 
 
 	public function updateRow($data) {
-		$table = $data->table;
-		unset($data->table);
+		$table = $data->fetchTable();
 		$numOfItems = count((array)$data);
 		$count = 1;
 
@@ -152,6 +189,7 @@ class MySqlDb {
 			}
 			
 		}
+		$sql = trim($sql, ', ');
 
 		$sql .= " WHERE {$table}.id = " . $data->id;
 
@@ -161,8 +199,7 @@ class MySqlDb {
 
 		return true;
 	}
-	 
-	
+
 	
 	private function checkPublicId($array, $tables) {
 		if (is_object($array)) {
@@ -178,9 +215,11 @@ class MySqlDb {
 		} else {
 			foreach ($array as $r) {
 				if (is_object($r)) {
-					if (isset ($r->public_id) && $r->public_id == '') {
-						$r->public_id = getRandomString();
-						$this->updatePublicId($r, $tables);
+					if (isset ($r->publid_id)) {
+						if ($r->public_id == '') {
+							$r->public_id = getRandomString();
+							$this->updatePublicId($r, $tables);
+						}
 					}
 				} else {
 					if ($r['public_id'] == '') {
@@ -188,8 +227,6 @@ class MySqlDb {
 						$this->updatePublicId($r, $tables);
 					}
 				}
-				
-				
 			}
 		}
 	}
@@ -231,7 +268,6 @@ class MySqlDb {
 		//	Check for public id
 		
 		if ($data->public_id == '') {
-			echo 1;
 			$data->public_id = getRandomString();
 		}
 		

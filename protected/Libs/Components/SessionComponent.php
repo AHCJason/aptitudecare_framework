@@ -37,7 +37,12 @@ class Session extends Singleton {
 
 
 
-	
+	public function getModule() {
+		if (isset ($this->default_module)) {
+			return $this->default_module;
+		}
+		return false;
+	}
 	
 	
 	

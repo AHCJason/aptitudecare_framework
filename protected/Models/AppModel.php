@@ -2,21 +2,32 @@
 
 class AppModel {
 
-	public function generate($id = null) {
+
+	public function generate($id = null, $class = null) {
 		if ($id == null) {
 			$class = get_called_class();
 			return new $class;
 		} else {
-			$called_class = get_called_class();
+			if ($class != null) {
+				$called_class = $class;
+			} else {
+				$called_class = get_called_class();
+			}
+
 			$class = new $called_class;
-			return self::fetchById($id);
+			return $this->fetchById($id, $class);
 
 		}
 	}
 	
 	
-	public function fetchOne($sql, $params = array()) {
-		$called_class = get_called_class();
+	public function fetchOne($sql, $params = array(), $class = null) {
+		if ($class != null) {
+			$called_class = $class;
+		} else {
+			$called_class = get_called_class();
+		}
+		
 		$class = new $called_class;
 		try {
 			return db()->fetchRow($sql, $params, $class);
@@ -25,9 +36,15 @@ class AppModel {
 		}
 	}
 	
-	public function fetchAll($sql, $params = array()) {
+	public function fetchAll($sql = null, $params = array()) {
 		$called_class = get_called_class();
 		$class = new $called_class;
+		$table = $class->fetchTable();
+
+		if ($sql == null) {
+			$sql = "SELECT * FROM `{$table}`";
+		}
+
 		try {
 			return db()->fetchRows($sql, $params, $class);
 		} catch (PDOException $e) {
@@ -51,7 +68,6 @@ class AppModel {
 	public function save($data = false) {
 		try {
 			if ($data) {
-				pr ($data);
 				if (!isset ($this->id) || $this->id != '') {
 					db()->updateRow($this);
 				} else {
@@ -71,45 +87,76 @@ class AppModel {
 		}
 		return true;
 	}
-	
-	
-	public function fetchById($id) {
 
+
+
+	/*
+	 * -------------------------------------------------------------------------
+	 *  DELETE ITEM BY ID
+	 * -------------------------------------------------------------------------
+	 */
+	
+	public function delete($data = false) {
+		try {
+			if ($data) {
+				db()->destroy($data);
+			} else {
+				db()->destroy($this);
+			}
+
+		} catch (PDOException $e) {
+			echo $e;
+		}
+
+		return true;
+	}
+	
+	public function fetchById($id, $className = null) {
 		$params[':id'] = $id;
-		
-		if (!isset($this)) {
-			$table = underscoreString(get_called_class());
-			$sql = "SELECT * FROM {$table} WHERE {$table}.";
-			if (is_numeric($id)) {
-				$sql .= "`id`=:id";
-			} else {
-				$sql .= "`public_id`=:id";
-			}
 
-			return self::fetchOne($sql, $params);
+		if ($className != null) {
+			$model = $className;
 		} else {
-			$table = $this->table;
-			$sql = "SELECT {$table}.* FROM {$table} ";
-			if (isset ($this->belongsTo)) {
-				foreach ($this->belongsTo as $k => $b) {
-					$sql .= " INNER JOIN {$k} ON {$table}.{$b['inner_key']}={$k}.{$b['foreign_key']} WHERE {$k}.";
-				}
-			} else {
-				$sql .= " WHERE {$table}.";
-			}
-			if (is_numeric($id)) {
-				$sql .= "id=:id";
-			} else {
-				$sql .= "public_id=:id";
-			}
+			$model = get_class($this);
+		}
 
-			return $this->fetchOne($sql, $params);
+		$class = new $model;
+		$table = $class->fetchTable();
+		
+		
+		$sql = "SELECT `{$table}`.*";
+		$belongsTo = $class->fetchBelongsTo();
 
+		if (!empty ($belongsTo)) {
+			// foreach ($class->belongsTo as $k => $b) {
+			// 	if (isset ($b['join_field'])) {
+			// 		$sql .= ", `{$b['table']}`.`{$b['join_field']['column']}` AS {$b['join_field']['name']} ";
+			// 	}
+					
+			// }
+
+			$sql .= " FROM `{$table}`";
+
+			// foreach ($belongsTo as $k => $b) {
+			// 	$sql .= " {$b['join_type']} JOIN `{$b['table']}` ON `{$b['table']}`.`{$b['foreign_key']}` = `{$table}`.`{$b['inner_key']}`";
+			// }
+		} else {
+			$sql .= " FROM `{$table}`";
 		} 
 
-		
-		
+		$sql .= " WHERE `{$table}`.";
 
+		if (is_numeric($id)) {
+			if ($model == 'HomeHealthSchedule') {
+				$sql .= "patient_id=:id";
+			} else {
+				$sql .= "id=:id";
+			}
+			
+		} else {
+			$sql .= "public_id=:id";
+		}
+		return $this->fetchOne($sql, $params, $class);
 	}
 
 
@@ -119,6 +166,20 @@ class AppModel {
 
 	public function fetchTable() {
 		return $this->table;
+	}
+
+	public function fetchBelongsTo() {
+		if (isset ($this->belongsTo)) {
+			return $this->belongsTo;
+		}
+		return false;
+	}
+
+	public function fetchHasMany() {
+		if (isset ($this->hasMany)) {
+			return $this->hasMany;
+		}
+		return false;
 	}
 
 	public function fetchColumnsToInclude() {
@@ -132,31 +193,19 @@ class AppModel {
 	 * -------------------------------------------------------------------------
 	 */
 
-	public function fetchManageData() {
+	public function fetchManageData($loc = false, $orderby = false) {
 		if (isset (input()->type)) {
 			$model = ucfirst(camelizeString(depluralize(input()->type)));
 			$class = new $model;
-			$table = $class->fetchTable();
-			$sql = "SELECT `{$table}`.*";
-			$i = 1;
-			if (isset ($class->belongsTo)) {
-				foreach ($class->belongsTo as $k => $b) {
-					if (isset ($b['join_field'])) {
-						$sql .= ", `{$b['table']}`.`{$b['join_field']['column']}` AS {$b['join_field']['name']} ";
-					}
-					
-				}
 
-				$sql .= " FROM `{$table}`";
-
-				foreach ($class->belongsTo as $k => $b) {
-					$sql .= " {$b['join_type']} JOIN `{$b['table']}` ON `{$b['table']}`.`{$b['foreign_key']}` = `{$table}`.`{$b['inner_key']}`";
-				}
+			if (isset (input()->page_num)) {
+				$_pageNum = input()->page_num;
 			} else {
-				$sql .= " FROM `{$table}`";
+				$_pageNum = false;
 			}
 
-			return $this->fetchAll($sql);
+			$pagination = new Paginator();
+			return $pagination->fetchResults($class, $orderby, $_pageNum, $loc);
 		}
 
 		return false;
@@ -175,6 +224,11 @@ class AppModel {
 		} catch (PDOException $e) {
 			echo $e;
 		}
+	}
+
+
+	public function fullName() {
+		return $this->last_name . ", " . $this->first_name;
 	}
 	
 	

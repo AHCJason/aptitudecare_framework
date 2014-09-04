@@ -21,6 +21,10 @@ h1 {
 	margin: 25px 0;
 }
 
+h2 {
+	margin-top: 5px;
+}
+
 h1, h2 {
 	text-align: center;
 }
@@ -49,26 +53,39 @@ div#modules {
 
 div#patient-search {
 	position: absolute;
+	left: 15px;
+	top: 30px;
+}
+
+div#patient-search input[type="text"] {
+	width: 250px;
+}
+
+div#areas {
+	position: absolute;
 	right: 15px;
 	top: 30px;
 }
 
-div#locations {
-	position: absolute;
+a.button {
+	background: #686868;
+	border-radius: 3px;
+	color: #f1f1f1;
+	padding: 4px 8px;
+	font-size: 12px;
 }
 
 div.button {
 	position: absolute;
-	top: 30px;
 	
 }
 
 div.button.left {
-	left: 25px;
+	left: 30px;
 }
 
 div.button.right {
-	right: 25px;
+	right: 30px;
 }
 
 div.button > a {
@@ -103,25 +120,55 @@ div#date-header h2 {
 	float: left;
 }
 
-table.form-table {
+table.form {
 	width: auto;
-	max-width: 80%;
+	max-width: 90%;
+	margin: 20px auto;
+}
+
+table.form th {
+	background: #c8c8c8;
+	padding: 5px;
+}
+
+table.form td {
+	padding: 5px 10px;
+}
+
+table.login td {
+	padding: 0;
+}
+
+table.view {
+	width: 90%;
 	margin: 20px auto;
 	text-align: left;
 	font-weight: normal;
+	border-collapse: collapse;
 }
 
-table.form-table th {
+table.view th {
 	background: #ccc;
-	width: 100%;
+	width: auto;
 	padding: 5px 15px;
-	text-align: center;
 	font-weight: bold;
 }
 
+table.view td {
+	border-bottom: 1px dotted #c6c6c6;
+	padding: 5px 15px;
+}
 
-table.form-table td {
-	padding: 5px 10px;
+table.view th a:hover {
+	text-decoration: none;
+}
+
+table.view a:hover {
+	text-decoration: underline;
+}
+
+img.add-button {
+	position: absolute;
 }
 
 /******** General Use Classes *************/
@@ -130,6 +177,7 @@ table.form-table td {
 .left { float: left; }
 .right { float: right; }
 .text-center { text-align: center; }
+.text-right { text-align: right; }
 .no-margin { margin: 0; }
 .link { text-decoration: underline; font-size: 12px; }
 
@@ -149,6 +197,13 @@ table.form-table td {
 .text-23 { font-size: 23px; }
 .text-24 { font-size: 24px; }
 
+.text-grey { color: #ccc; }
+.text-darker-grey { color: #999; }
+.background-red { background: #FF6A6A; }
+
+#dialog {
+	display: none;
+}
 
 
 .patient-menu {
@@ -156,18 +211,6 @@ table.form-table td {
 	margin-left: 8px;
 	margin-top: -2px;
 }
-
-
-
-
-
-/*********** Buttons and other useful items ************/
-
-img.add-button {
-	position: absolute;
-	margin-left: 2px;
-}
-
 
 
 
@@ -525,6 +568,17 @@ div#login-box input[type="text"], input[type="password"] {
 
 /****************** Dashboard Page *******************/
 
+div#locations {
+	text-align: center;
+	margin: 5px auto;
+
+}
+div#locations select {
+	font-size: 24px;
+	height: 30px;
+	border: none;
+}
+
 div#location-wrapper {
 	position: relative;
 	width: 100%;
@@ -573,6 +627,17 @@ div.location-admit-pending {
 	-moz-border-radius: 3px;
 }
 
+div.location-discharge {
+	background: #FF6A6A;
+	font-size: 11px;
+	line-height: 12px;
+	border-radius: 3px;
+	padding: 5px;
+	margin-top: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
 .box-title {
 	margin: 0 0 4px 2px;
 	color: #868686;
@@ -584,7 +649,6 @@ div.location-admit-pending {
 	padding-left: 4%;
 	color: #444;
 }
-
 
 
 /*********** Errors *********************/
@@ -599,37 +663,53 @@ div.location-admit-pending {
 	text-align: center;
 }
 
-#flash-messages.error {
+#flash-messages > .error {
 	background: #c31e1e;
 	margin: 2px auto;
 	padding: 5px 15px;
 	width: auto;
-	text-align: left;
+	text-align: center;
 }
 
-#flash-messages.success {
+#flash-messages > .success {
 	background: #157415;
 	margin: 2px auto;
 	padding: 5px 15px;
 	width: auto;
-	text-align: left;
+	text-align: center;
 }
 
 #flash-messages ul {
-	list-style-type: square;
+	list-style-type: none;
 }
 
 /*** Validation errors **/
 .error {
-	margin-left: 10px;
+	margin: 3px 10px;
 	background: #e64d3d;
 	padding: 4px 6px;
+	float: left;
+	clear: both;
 }
 
 div#debug {
 	position: fixed:
 	bottom: 0;
 	width: 100%;
+}
+
+
+
+/************** Debugging *******************/
+#debug {
+	position: relative;
+	bottom: 0;
+	padding: 15px;
+	width: 100%;
+	z-index: 100;
+	background: #fff;
+	border-top: 1px solid #666;
+	overflow: scroll;
 }
 
 
@@ -675,3 +755,160 @@ input[type="submit"], input[type="button"] {
 	outline: none;
 	cursor: pointer;
 }
+
+
+
+
+/************* Pagination ********************/
+
+div#pagination {
+	position: relative;
+	margin: 50px auto 25px auto;
+	width: 50%;
+	text-align: center;
+}
+
+div#pagination a {
+	margin: 0 25px;
+}
+
+div#pagination a.page-numbers {
+	margin: 0;
+	padding: 0 8px;
+	border-right: 1px solid #444;
+}
+
+
+
+
+/************* New Admit request search results **************/
+div#patient-results {
+	margin: 25px auto;
+	width: 95%;
+	position: relative;
+	text-align: center;
+	display: none;
+}
+
+div.patient-search-result {
+	margin: 15px;
+	padding: 10px;
+	display: inline-block;
+	width: 24%;
+	background: #ccc;
+	border-radius: 4px;
+}
+
+div.patient-search-result p {
+	margin: 0;
+	text-align: left;
+}
+
+div#submit-new-patient {
+	float: right;
+	margin: 25px 150px;
+	clear: both;
+	display: none;
+}
+
+
+
+/********** Discharge pages *********************/
+
+#discharges {
+	position: relative;
+	margin: 0 auto;
+	width: 90%;
+}
+
+#current-patients {
+	margin: 50px auto 10px auto;
+	padding: 8px;
+	min-height: 36px;
+	background: #e2e2e2;
+}
+
+#current-patients h2 {
+	font-size: 16px;
+	color: #a8a8a8;
+}
+
+.current-patient {
+	font-size: 14px;
+	background: #195587;
+	width: 15%;
+	margin: 2px;
+	padding: 5px;
+	border-radius: 4px;
+	color: #f9f9f9;
+	float: left;
+}
+
+
+#discharge-container {
+	width: 90%;
+	/*position: relative;*/
+	/*min-height: 250px;*/
+	text-align: justify;
+	white-space: nowrap;
+}
+
+div.discharge-day-wrapper {
+	width: 14.1%;
+	padding: .18%;
+	display: inline-block;
+	margin: 0px 4px;
+	font-size: 10px;
+
+	
+}
+
+div.discharge-day-wrapper h3 {
+	text-align: center;
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.discharge-day {
+	height: auto;
+	width: 100%;
+	min-width: 50px;
+	min-height: 175px;
+	padding: 5px 5px 50px 5px;
+	background: #e2e2e2;
+	border-radius: 2px;
+	
+}
+
+
+.discharge-info {
+	font-size: 14px;
+	float: left;
+	background: #FF6A6A;
+	margin: 2px 0;
+	padding: 4px 6px;
+	border-radius: 4px;
+	width: 93%;
+	color: #f9f9f9;
+}
+
+
+div.dragging-patient {
+	background: #fff;
+	border: 1px dashed #666;
+	border-radius: 4px;
+	width: 150px;
+	padding: 6px;
+	font-size: 12px;
+	z-index: 1000;
+}
+
+
+div.drag-hover {
+	border: 1px solid #d2d2d2;
+	border-radius: 2px;
+	background: #c8c8c8;
+}
+
+
+

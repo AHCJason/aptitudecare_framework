@@ -1,9 +1,31 @@
 <?php
 
 function pr($var) {
+	echo '<div id="debug">';
 	echo '<pre>';
  	print_r($var);
     echo '</pre>';
+    echo '</div>';
+    echo '<div class="clear"></div>';
+}
+
+function debug($string, $array = false) {
+	echo '<div id="debug">';
+	echo '<h2>Debug Info:</h2>';
+	if (is_array($string) || is_object($string)) {
+		echo '<pre>';
+		print_r ($string);
+		echo '</pre>';
+	} else {
+		echo $string;
+	}
+	
+	if ($array) {
+		echo '<pre>';
+		print_r ($array);
+		echo '</pre>';
+	}
+	echo '</div>';
 }
 
 
@@ -41,9 +63,9 @@ function stringify($string) {
 		$result = ucfirst (str_replace('_', ' ', implode('_', array_map('ucfirst', explode('_', $string)))));
 		if (strstr($result, 'Id')) {
 			$result = str_replace(' Id', '', $result);
-		} elseif (strstr($result, 'Default')) {
-			$result = str_replace('Default ', '', $result);
-		}
+		} //elseif (strstr($result, 'Default')) {
+		// 	$result = str_replace('Default ', '', $result);
+		// }
 
 		return $result;
 	} else {
@@ -77,6 +99,12 @@ function depluralize($word) {
 		return $word;
 	}
 }
+
+
+function getModelName($string) {
+	return ucfirst(camelizeString(depluralize($string)));
+}
+
 
 function getRandomString($length = 10) {
 	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -145,15 +173,6 @@ function getMaritalStatuses() {
 	);
 }
 
-function getDmEquipment() {
-	return array(
-		"Wheelchair",
-		"Walker",
-		"Oxygen"
-	);
-}
-
-
 
 /*
  * -------------------------------------------------------------------------
@@ -170,11 +189,26 @@ function mysql_datetime($date = null) {
 	return date('Y-m-d H:i:s', strtotime($date));
 }
 
+function mysql_datetime_admit($date = null) {
+	if ($date == null) {
+		$date = 'now';
+	} 
+	return date('Y-m-d 11:00:00', strtotime($date));
+}
+
 function mysql_date($date = null) {
 	if ($date == null) {
 		$date = 'now';
 	} 
 	return date('Y-m-d', strtotime($date));
+}
+
+
+function display_date($date = false) {
+	if ($date) {
+		return date('m/d/Y', strtotime($date));
+	}
+	return false;
 }
 
 
