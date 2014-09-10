@@ -115,6 +115,8 @@ class Paginator {
 				$params[':orderby'] = $orderby;
 			}
 
+			$sql .= " GROUP BY {$table}.id";
+
 			//	If there are more than the default items per page in the result then we need to paginate
 			if ($this->items_total > $this->default_ipp) {
 				return $this->paginate($sql, $params, $class);

@@ -41,23 +41,23 @@ a {
 
 /********* General Site-wide Items **************/
 
-div#search-header {
+#search-header {
 	height: 18px;
 	margin-bottom: 25px;
 }
 
-div#modules {
+#modules {
 	position: absolute;
 	top: 30px;
 }
 
-div#patient-search {
+#patient-search {
 	position: absolute;
 	left: 15px;
 	top: 30px;
 }
 
-div#patient-search input[type="text"] {
+#patient-search input[type="text"] {
 	width: 250px;
 }
 
@@ -148,15 +148,16 @@ table.view {
 }
 
 table.view th {
-	background: #ccc;
+	background: #e9e9e9;
 	width: auto;
-	padding: 5px 15px;
+	padding: 5px 8px;
 	font-weight: bold;
 }
 
 table.view td {
 	border-bottom: 1px dotted #c6c6c6;
 	padding: 5px 15px;
+	width: auto;
 }
 
 table.view th a:hover {
@@ -200,6 +201,12 @@ img.add-button {
 .text-grey { color: #ccc; }
 .text-darker-grey { color: #999; }
 .background-red { background: #FF6A6A; }
+.font-normal { font-weight: normal; }
+
+.horizontal-break {
+	border-bottom: 1px dotted #c8c8c8;
+	margin: 25px 0;
+}
 
 #dialog {
 	display: none;
@@ -417,7 +424,7 @@ nav ul li ul li:last-child {
 
 /* UL styles */
 .dropdown dd ul { 
-	background:rgba(0,0,0,0.5) none repeat scroll 0 0; 
+	background:rgba(40, 40, 40,0.75) none repeat scroll 0 0; 
     list-style: none; 
     padding: 3px 0; 
     display: none;
@@ -577,6 +584,7 @@ div#locations select {
 	font-size: 24px;
 	height: 30px;
 	border: none;
+	background: none;
 }
 
 div#location-wrapper {
@@ -593,7 +601,7 @@ div.location-container {
 
 div.location-day-box {
 	height: auto !important;
-	min-height: 100px;
+	min-height: 180px;
 	border-radius: 3px;
 	padding: 5%;
 	-webkit-border-radius: 3px;
@@ -629,8 +637,9 @@ div.location-admit-pending {
 
 div.location-discharge {
 	background: #FF6A6A;
-	font-size: 11px;
-	line-height: 12px;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 14px;
 	border-radius: 3px;
 	padding: 5px;
 	margin-top: 3px;
@@ -640,7 +649,7 @@ div.location-discharge {
 
 .box-title {
 	margin: 0 0 4px 2px;
-	color: #868686;
+	color: #b4b4b4;
 }
 
 .day-title {
@@ -655,10 +664,9 @@ div.location-discharge {
 
 #flash-messages {
 	position: relative;
-	margin: 0 auto 5px auto;
+	margin: 20px auto;
 	font-size: 14px;
-	max-width: 70%;
-	width: auto;
+	width: 60%;
 	color: #f1f1f1;
 	text-align: center;
 }
@@ -667,7 +675,7 @@ div.location-discharge {
 	background: #c31e1e;
 	margin: 2px auto;
 	padding: 5px 15px;
-	width: auto;
+	width: 100%;
 	text-align: center;
 }
 
@@ -675,7 +683,7 @@ div.location-discharge {
 	background: #157415;
 	margin: 2px auto;
 	padding: 5px 15px;
-	width: auto;
+	width: 100%;
 	text-align: center;
 }
 

@@ -97,7 +97,7 @@ class MySqlDb {
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
 	
-	public function update($sql, $params) {
+	public function update($sql, $params = null) {
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);
 		$stmt->execute($params);
@@ -119,14 +119,15 @@ class MySqlDb {
 		$count = 1;
 
 
-		if (isset ($data->public_id)) {
+
+		// if (isset ($data->public_id)) {
 			$dataSet = $this->setDataStamps($data);
-		}  else {
-			//	Added this because new patients were not being assigned a publid_id
+		// }  else {
+			//	Added this because new patients were not being assigned a publi_id
 			//	however this may break other functionality
-			$data->public_id = '';
-			$dataSet = $this->setDataStamps($data);
-		}
+			// $data->public_id = '';
+		// 	$dataSet = $this->setDataStamps($data);
+		// }
 
 		$sql = "INSERT INTO {$table} (";
 		foreach ($dataSet as $k => $d) {
@@ -267,8 +268,10 @@ class MySqlDb {
 	public function setDataStamps($data) {
 		//	Check for public id
 		
-		if ($data->public_id == '') {
-			$data->public_id = getRandomString();
+		if (isset ($data->public_id)) {
+			if ($data->public_id == '') {
+				$data->public_id = getRandomString();
+			}
 		}
 		
 		if (isset ($data->datetime_created)) {
