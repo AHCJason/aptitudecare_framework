@@ -29,7 +29,7 @@
 	if (isset(input()->module)) { 
 		// Set module
 		$module = input()->module;
-		
+
 		// Set the page (or controller)
 		if (!isset (input()->page)) {
 			$page = $module;

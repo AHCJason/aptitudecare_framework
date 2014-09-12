@@ -89,7 +89,7 @@ class Paginator {
 				if (!empty ($hasMany)) {
 					foreach ($hasMany as $k => $v) {
 						if (input()->type == 'users') {
-							$sql .= " `{$v['table']}`.`{$v['join_key']}` = :item";
+							$sql .= " (location.id = :item OR user_location.location_id = :item)";
 							$params[":item"] = $loc->id;
 						} 				
 					}

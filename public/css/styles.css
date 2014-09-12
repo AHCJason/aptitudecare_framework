@@ -497,6 +497,18 @@ div#content {
 	background: #f1f1f1;
 }
 
+#page-wrapper {
+	position: relative;
+	width: 75%;
+	text-align: justify;
+	margin: 50px auto;
+}
+
+#page-wrapper textarea {
+	width: 100%;
+	height: 60px;
+}
+
 div#page-content {
 	margin: 0;
 	height: 100%;
@@ -583,8 +595,12 @@ div#locations {
 div#locations select {
 	font-size: 24px;
 	height: 30px;
-	border: none;
+	border: 1px dotted #ccc;
 	background: none;
+}
+
+#optgroup h1 {
+	font-size: 14px;
 }
 
 div#location-wrapper {
@@ -710,7 +726,7 @@ div#debug {
 
 /************** Debugging *******************/
 #debug {
-	position: relative;
+	position: absolute;
 	bottom: 0;
 	padding: 15px;
 	width: 100%;

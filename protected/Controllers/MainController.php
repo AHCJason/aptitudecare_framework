@@ -319,44 +319,63 @@ class MainController {
 	 */
 		
 	public function redirect($params = false) {	
+
 		if (is_array($params)) {	
-			if (isset($params['module'])) {
-				if (!isset ($params['page'])) {
-					$redirect_url = SITE_URL . "/?module=" . $params['module'];
+			// if (isset($params['module'])) {
+			// 	if (!isset ($params['page'])) {
+			// 		$redirect_url = SITE_URL . "/?module=" . $params['module'];
+			// 	} else {
+			// 		if (isset ($params['action'])) {
+			// 			$redirect_url = SITE_URL . '?module=' . $params['module'] . '&page=' . $params['page'] . '&action=' . $params['action']; 
+			// 		} else {
+			// 			$redirect_url = SITE_URL . '?module=' . $params['module'] . '&page=' . $params['page'];
+			// 		}
+			// 	}
+			// } else {	
+				$redirect_url = SITE_URL . "/?";
+
+				if (isset ($params['page'])) {
+					$params['page'] =  strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $params['page']));
 				} else {
-					if (isset ($params['action'])) {
-						$redirect_url = SITE_URL . '?module=' . $params['module'] . '&page=' . $params['page'] . '&action=' . $params['action']; 
-					} else {
-						$redirect_url = SITE_URL . '?module=' . $params['module'] . '&page=' . $params['page'];
+					$params['page'] = 'MainPage';
+				}
+				if (isset ($params['action'])) {
+					if ($params['action'] == 'index') {
+						unset ($params['action']);
 					}
 				}
-			} else {	
-				if (isset($params['page'])) {
-					$page = strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $params['page']));
-				} else {
-					$page = 'MainPage';
+				foreach ($params as $k => $p) {
+					$redirect_url .= "{$k}={$p}&";
 				}
-				if (isset($params['action'])) {
-					$action = $params['action'];
-					if ($params['action'] == 'index') {
-						$redirect_url = SITE_URL . "/{$page}";
-					} else {
-						if (isset ($params['type'])) {
-							$type = $params['type'];
-							$redirect_url = SITE_URL . "/?page={$page}&action={$action}&type={$type}";
-						} else {
-							$redirect_url = SITE_URL . "/?page={$page}&action={$action}";
-						}
-					}	
-				} else {
-					$redirect_url = SITE_URL . "/{$page}";
-				}
-			}
+
+				$redirect_url = trim ($redirect_url, "&amp;");
+				// if (isset($params['page'])) {
+				// 	$page = strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $params['page']));
+				// } else {
+				// 	$page = 'MainPage';
+				// }
+				// if (isset($params['action'])) {
+				// 	$action = $params['action'];
+				// 	if ($params['action'] == 'index') {
+				// 		$redirect_url = SITE_URL . "/{$page}";
+				// 	} else {
+				// 		if (isset ($params['type'])) {
+				// 			$type = $params['type'];
+				// 			$redirect_url = SITE_URL . "/?page={$page}&action={$action}&type={$type}";
+				// 		} else {
+				// 			$redirect_url = SITE_URL . "/?page={$page}&action={$action}";
+				// 		}
+				// 	}	
+				// } else {
+				// 	$redirect_url = SITE_URL . "/{$page}";
+				// }
+			// }
 		} elseif ($params) {
 			$redirect_url = $params;
 		} else {
 			$redirect_url = SITE_URL;
 		}
+
 		$this->redirectTo($redirect_url);
 		
 	}	
@@ -491,7 +510,7 @@ class MainController {
 		}
 		$location = $this->loadModel('Location', $loc_id);
 		smarty()->assign('location_id', $location->public_id);
-		
+
 		smarty()->assign('title', "Manage {$pageTitle}");
 		smarty()->assign('headerTitle', $pageTitle);
 		smarty()->assign('type', input()->type);
