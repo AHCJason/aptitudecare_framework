@@ -156,7 +156,7 @@ class MainController {
 		// Get default user location
 		$location = $this->loadModel('Location')->fetchDefaultLocation();
 		//	Get other locations to which the user has access
-		$locations = $this->loadModel('Location')->fetchOtherLocations();
+		$locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
 
 		// Get all the locations for the user
 		if (isset (input()->location)) {
@@ -321,24 +321,12 @@ class MainController {
 	public function redirect($params = false) {	
 
 		if (is_array($params)) {	
-			// if (isset($params['module'])) {
-			// 	if (!isset ($params['page'])) {
-			// 		$redirect_url = SITE_URL . "/?module=" . $params['module'];
-			// 	} else {
-			// 		if (isset ($params['action'])) {
-			// 			$redirect_url = SITE_URL . '?module=' . $params['module'] . '&page=' . $params['page'] . '&action=' . $params['action']; 
-			// 		} else {
-			// 			$redirect_url = SITE_URL . '?module=' . $params['module'] . '&page=' . $params['page'];
-			// 		}
-			// 	}
-			// } else {	
 				$redirect_url = SITE_URL . "/?";
 
 				if (isset ($params['page'])) {
 					$params['page'] =  strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $params['page']));
-				} else {
-					$params['page'] = 'MainPage';
-				}
+				} 
+
 				if (isset ($params['action'])) {
 					if ($params['action'] == 'index') {
 						unset ($params['action']);
@@ -349,27 +337,6 @@ class MainController {
 				}
 
 				$redirect_url = trim ($redirect_url, "&amp;");
-				// if (isset($params['page'])) {
-				// 	$page = strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $params['page']));
-				// } else {
-				// 	$page = 'MainPage';
-				// }
-				// if (isset($params['action'])) {
-				// 	$action = $params['action'];
-				// 	if ($params['action'] == 'index') {
-				// 		$redirect_url = SITE_URL . "/{$page}";
-				// 	} else {
-				// 		if (isset ($params['type'])) {
-				// 			$type = $params['type'];
-				// 			$redirect_url = SITE_URL . "/?page={$page}&action={$action}&type={$type}";
-				// 		} else {
-				// 			$redirect_url = SITE_URL . "/?page={$page}&action={$action}";
-				// 		}
-				// 	}	
-				// } else {
-				// 	$redirect_url = SITE_URL . "/{$page}";
-				// }
-			// }
 		} elseif ($params) {
 			$redirect_url = $params;
 		} else {

@@ -9,7 +9,7 @@ class Paginator {
 	public $num_pages;
 	public $high;
 	public $low;
-	public $default_ipp = 25;
+	public $default_ipp = 10;
 
 
 	public function __construct() {
@@ -39,7 +39,7 @@ class Paginator {
 		$sql .= " LIMIT {$this->low}, {$this->default_ipp}";
 
 		smarty()->assignByRef('pagination', $this);
-		return db()->fetchRows($sql, $params = array(), $class);
+		return db()->fetchRows($sql, $params, $class);
 	}
 
 
@@ -53,8 +53,10 @@ class Paginator {
 			}
 
 			//	Need to first count how many items are in the row to see if we need to paginate the results
-			$count = db()->fetchCount($table);
-			$this->items_total = $count['items'];
+			//$count = db()->fetchCount($table);
+			$obj = new User();
+			$count = $obj->userCount($loc->id);
+			$this->items_total = $count->items;
 			
 
 			$sql = "SELECT `{$table}`.*";
@@ -63,7 +65,7 @@ class Paginator {
 			if (!empty ($belongsTo)) {
 				foreach ($belongsTo as $k => $b) {
 					if (isset ($b['join_field'])) {
-						$sql .= ", `{$b['table']}`.`{$b['join_field']['column']}` AS {$b['join_field']['name']} ";
+						$sql .= ", `{$b['table']}`.`{$b['join_field']['column']}` AS {$b['join_field']['name']}";
 					}
 					
 				}
@@ -116,6 +118,7 @@ class Paginator {
 			}
 
 			$sql .= " GROUP BY {$table}.id";
+
 
 			//	If there are more than the default items per page in the result then we need to paginate
 			if ($this->items_total > $this->default_ipp) {

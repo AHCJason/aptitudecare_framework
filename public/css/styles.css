@@ -641,7 +641,6 @@ div.location-admit {
 }
 
 div.location-admit-pending {
-	background: #6BBEFF;
 	font-size: 11px;
 	line-height: 12px;
 	border-radius: 3px;
@@ -651,9 +650,18 @@ div.location-admit-pending {
 	-moz-border-radius: 3px;
 }
 
-div.location-discharge {
+.box-blue {
+	background: #6BBEFF;
+}
+
+.box-white {
+	background: #f1f1f1;
+	border: 1px solid #c8c8c8;
+}
+
+.location-discharge {
 	background: #FF6A6A;
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: normal;
 	line-height: 14px;
 	border-radius: 3px;
@@ -848,7 +856,6 @@ div#submit-new-patient {
 #current-patients {
 	margin: 50px auto 10px auto;
 	padding: 8px;
-	min-height: 36px;
 	background: #e2e2e2;
 }
 
@@ -858,14 +865,16 @@ div#submit-new-patient {
 }
 
 .current-patient {
-	font-size: 14px;
 	background: #195587;
 	width: 15%;
+	max-height: 25px;
 	margin: 2px;
 	padding: 5px;
 	border-radius: 4px;
 	color: #f9f9f9;
 	float: left;
+	font-size: 12px;
+	text-overflow: ellipsis;
 }
 
 
@@ -906,14 +915,16 @@ div.discharge-day-wrapper h3 {
 
 
 .discharge-info {
-	font-size: 14px;
+	font-size: 12px;
 	float: left;
 	background: #FF6A6A;
 	margin: 2px 0;
 	padding: 4px 6px;
 	border-radius: 4px;
 	width: 93%;
+	max-width: 150px;
 	color: #f9f9f9;
+	text-overflow: ellipsis;
 }
 
 
@@ -927,12 +938,18 @@ div.dragging-patient {
 	z-index: 1000;
 }
 
+.moving-element {
+	border: 1px dashed #666;
+}
+
+.moving-discharge {
+	opacity: 0.5;
+}
+
 
 div.drag-hover {
 	border: 1px solid #d2d2d2;
 	border-radius: 2px;
 	background: #c8c8c8;
 }
-
-
 

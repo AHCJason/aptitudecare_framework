@@ -24,11 +24,16 @@
 	/*
 	 * Check first for post variables which contain a page and action
 	 */
-	
+
 	// If the variables are available from a post request, use them...
 	if (isset(input()->module)) { 
 		// Set module
 		$module = input()->module;
+
+		if ($module == "Admission") {
+			header("Location: " . SITE_URL . "/admission/?page=login&action=single_sign_on&user=" . input()->user);
+			exit;
+		}
 
 		// Set the page (or controller)
 		if (!isset (input()->page)) {
@@ -36,8 +41,8 @@
 		} else {
 			$page = ucfirst(camelizeString(input()->page));
 		}
-		
 
+		
 		// Set the controller action
 		if (isset(input()->action)) {
 			// this is the controller method
@@ -48,7 +53,6 @@
 			$camelizedAction = 'index';
 		}
 				
-		
 	} elseif (isset (input()->page)) {
 		$page = ucfirst(camelizeString(input()->page));
 
@@ -125,8 +129,6 @@
 		$camelizedAction = 'index';
 	
 	}
-
-
 
 
 /*
