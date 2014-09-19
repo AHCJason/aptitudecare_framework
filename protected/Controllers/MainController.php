@@ -113,6 +113,17 @@ class MainController {
 		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);
 		smarty()->assign('module', $module);
 
+		if (file_exists(SITE_DIR . '/public/img/logo.jpg')) {
+			$logo = IMAGES . '/logo.jpg';
+		} elseif (file_exists(SITE_DIR . '/public/img/logo.png')) {
+			$logo = IMAGES . '/logo.png';
+		} else {
+			$logo = FRAMEWORK_IMAGES . '/aptitudecare.png';
+		}
+
+		
+		smarty()->assign('logo', $logo);
+
 		//	Make sure the session is valid and get the user info
 		//	Re-direction is failing here, for some reason we are not passing the 
 		//	auth()->isLoggedIn() test

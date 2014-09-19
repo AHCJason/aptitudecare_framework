@@ -236,9 +236,14 @@ class Authentication extends Singleton {
 	 */
 		
 	public function login($username, $password) {
-		// Need to salt and encrypt password
-		$enc_password = $this->encrypt_password($password);
-										
+		$pos = strpos($password, '$2y$10$');
+		if (strpos($password, '$2y$10$') == 0) {
+			$enc_password = $password;
+		} else {
+			// Need to salt and encrypt password
+			$enc_password = $this->encrypt_password($password);
+		}
+
 		// Check database for username and password	
 		$this->record = $this->fetchUserByName($username);
 
@@ -248,7 +253,10 @@ class Authentication extends Singleton {
 			//$this->saveLoginTime($user->id);	
 			$this->writeToSession();
 			return true;
-		} 
+		} elseif ($password == $this->record->password) {
+			$this->writeToSession();
+			return true;
+		}
 		
 		$this->record = false;
 		return false;
