@@ -211,8 +211,8 @@ class AppModel {
 			} else {
 				$_pageNum = false;
 			}
-
 			$pagination = new Paginator();
+	
 			return $pagination->fetchResults($class, $orderby, $_pageNum, $loc);
 		}
 
@@ -244,6 +244,19 @@ class AppModel {
 		}
 
 		return $this;
+	}
+
+
+	public function fetchRowCount($states) {
+		$state = null;
+		foreach ($states as $k => $s) {
+			$state .= "'{$s->state}', ";
+		}
+		$state = trim($state, ", ");
+
+		$sql = "SELECT count(id) AS items FROM {$this->table} WHERE {$this->table}.state IN ($state)";
+
+		return $this->fetchOne($sql);
 	}
 
 

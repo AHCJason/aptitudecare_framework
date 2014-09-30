@@ -795,7 +795,7 @@ input[type="submit"], input[type="button"] {
 div#pagination {
 	position: relative;
 	margin: 50px auto 25px auto;
-	width: 50%;
+	width: 70%;
 	text-align: center;
 }
 
@@ -809,7 +809,16 @@ div#pagination a.page-numbers {
 	border-right: 1px solid #444;
 }
 
+#beginning-end {
+	position: relative;
+	text-align: center;
+	width: 70%;
+	margin: auto;
+}
 
+#beginning-end a {
+	margin: 0 15px;
+}
 
 
 /************* New Admit request search results **************/
