@@ -89,6 +89,13 @@ class MySqlDb {
 		return $stmt->fetchAll(PDO::FETCH_COLUMN);
 	}
 
+	public function fetchColumnNames($table) {
+		$conn = $this->getConnection();
+		$stmt = $conn->prepare("DESCRIBE {$table}");
+		$stmt->execute();
+		return $stmt->fetchAll(PDO::FETCH_COLUMN);
+	}
+
 	public function fetchCount($table) {
 		$sql = "SELECT count('id') AS items FROM `{$table}`";
 		$conn = $this->getConnection();
@@ -176,6 +183,7 @@ class MySqlDb {
 		$table = $data->fetchTable();
 		$numOfItems = count((array)$data);
 		$count = 1;
+
 
 		$dataSet = $this->setDataStamps($data);
 
@@ -268,31 +276,42 @@ class MySqlDb {
 	public function setDataStamps($data) {
 		//	Check for public id
 		
-		if (isset ($data->public_id)) {
+
+		if (array_key_exists('public_id', $data)) {
 			if ($data->public_id == '') {
 				$data->public_id = getRandomString();
 			}
-		}
+		} 
 		
-		if (isset ($data->datetime_created)) {
+		if (array_key_exists ('datetime_created', $data)) {
 			if ($data->datetime_created == null || $data->datetime_created == '0000-00-00 00:00:00') {
 				$data->datetime_created = mysql_datetime();
 			}
 		} 
 		
-		if (isset ($data->datetime_modified)) {
+		if (array_key_exists ('datetime_modified', $data)) {
 			$data->datetime_modified = mysql_datetime();
-		}				
+		}	
+
+		if (array_key_exists('datetime_last_login', $data)) {
+			$data->datetime_last_login = mysql_datetime();
+		}			
 
 		//	Get user data from the session
 		$user = auth()->getRecord();
 
-		if (isset ($data->user_created) && ($data->user_created == '' || $data->user_created == 0)) {
+		if (array_key_exists('user_created', $data) && ($data->user_created == '' || $data->user_created == 0)) {
 			$data->user_created = $user->id;
 		}
 
-		if (isset ($data->user_modified)) {
+		if (array_key_exists('user_modified', $data)) {
 			$data->user_modified = $user->id;
+		}
+
+		foreach ($data as $k => $d) {
+			if (($d != 0 || $d != false) && $d == '') {
+				unset ($data->$k);
+			}
 		}
 
 		return $data;

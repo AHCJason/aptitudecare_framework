@@ -186,7 +186,7 @@ function mysql_datetime($date = null) {
 	if ($date == null) {
 		$date = 'now';
 	} 
-	return date('Y-m-d 11:00:00', strtotime($date));
+	return date('Y-m-d H:i:s', strtotime($date));
 }
 
 function mysql_datetime_admit($date = null) {

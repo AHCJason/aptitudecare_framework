@@ -90,7 +90,17 @@ class MainController {
 		if ($id) {
 			return $class->fetchById($id);
 		} else {
-			return $class;
+			//  This is an empty object, get the column names
+			//	If the table is schedule then it is trying to access the admission dashboard
+			//	we won't have access to this and don't need to get the column names from that
+			//	table anyway.
+			if ($class->fetchTable() != "schedule") {
+				return $class->fetchColumnNames();
+			} else {
+				//	If the table variable isn't set in the model, then just return an empty object.
+				return $class;
+			}
+			
 		}
 		
 	}
@@ -584,6 +594,32 @@ class MainController {
 		
 
 		return $data;
+	}
+
+
+
+
+	public function getArea() {
+
+		if (isset(input()->location)) {
+			// If the location is set in the url, get the location by the public_id
+			$location = $this->loadModel('Location', input()->location);
+			if (isset (input()->area)) {
+				$area = $location->fetchLinkedFacility(input()->area);
+			} else {
+				$area = $location->fetchLinkedFacility($location->id);
+			}
+		} else {
+			// Get the users default location from the session
+			$location = $this->loadModel('Location', auth()->getDefaultLocation());
+			$area = $location->fetchLinkedFacility($location->id);
+		}
+
+		smarty()->assignByRef('loc', $location);
+		smarty()->assignByRef('selectedArea', $area);
+
+		return $area;
+
 	}
 	
 	

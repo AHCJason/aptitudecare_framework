@@ -246,15 +246,21 @@ class Authentication extends Singleton {
 
 		// Check database for username and password	
 		$this->record = $this->fetchUserByName($username);
+		$obj = new User;
+		$user = $obj->fetchById($this->record->id);
 
 		// check if returned user matches password
 		if (password_verify($password, $this->record->password)) {
 			// record datetime login
 			//$this->saveLoginTime($user->id);	
 			$this->writeToSession();
+			// save login time to db
+
+			$user->save();
 			return true;
 		} elseif ($password == $this->record->password) {
 			$this->writeToSession();
+			$user->save();
 			return true;
 		}
 		

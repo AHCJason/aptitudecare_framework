@@ -52,6 +52,14 @@ class AppModel {
 		}
 	}
 
+
+	public function fetchCustom($sql, $params = array()) {
+		$called_class = get_called_class();
+		$class = new $called_class;
+		$table = $class->fetchTable();
+		return db()->fetchRows($sql, $params, $class);
+	}
+
 	public function fetchAllData() {
 		$table = $this->fetchTable();
 		$sql = "SELECT `{$table}`.* FROM `{$table}`";
@@ -67,11 +75,11 @@ class AppModel {
 
 	public function save($data = false) {
 		try {
-			if ($data) {
+			if ($data != false) {
 				if (!isset ($this->id) || $this->id != '') {
-					db()->updateRow($this);
+					db()->updateRow($data);
 				} else {
-					return db()->saveRow($this);
+					return db()->saveRow($data);
 				}
 				
 			} else {
@@ -212,18 +220,30 @@ class AppModel {
 	}
 
 
+	// public function fetchColumnNames() {
+	// 	$called_class = get_called_class();
+	// 	$class = new $called_class;
+	// 	$table = $class->fetchTable();
+	// 	$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`=:dbname AND `TABLE_NAME`=:table";
+	// 	$params[':table'] = $table;
+	// 	$params[':dbname'] = db()->dbname;
+	// 	try {
+	// 		return db()->fetchColumns($sql, $params, $class);
+	// 	} catch (PDOException $e) {
+	// 		echo $e;
+	// 	}
+	// }
+
+
 	public function fetchColumnNames() {
-		$called_class = get_called_class();
-		$class = new $called_class;
-		$table = $class->fetchTable();
-		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`=:dbname AND `TABLE_NAME`=:table";
-		$params[':table'] = $table;
-		$params[':dbname'] = db()->dbname;
-		try {
-			return db()->fetchColumns($sql, $params, $class);
-		} catch (PDOException $e) {
-			echo $e;
+		$table = $this->fetchTable();
+		$columnNames =  db()->fetchColumnNames($table);
+
+		foreach ($columnNames as $n) {
+			$this->$n = null;
 		}
+
+		return $this;
 	}
 
 

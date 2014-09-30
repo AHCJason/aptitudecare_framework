@@ -46,6 +46,7 @@
  	//require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors/Smarty-3.1.19/libs/Smarty.class.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Controllers' . DS . 'MainController.php');
  	require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors' . DS . 'Smarty-3.1.19' . DS . 'libs' . DS . 'Smarty.class.php');
+ 	require_once (FRAMEWORK_PROTECTED_DIR . DS . 'Vendors' . DS . 'PHPMailer' . DS . 'PHPMailerAutoload.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Singleton.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Common.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Authentication.php');
