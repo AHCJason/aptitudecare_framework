@@ -174,24 +174,28 @@ class MainController {
 		$this->page = ucfirst($folder);
 		$this->action = $name;
 
-		// Get default user location
-		$location = $this->loadModel('Location')->fetchDefaultLocation();
-		//	Get other locations to which the user has access
-		$locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
-
-		// Get all the locations for the user
-		if (isset (input()->location)) {
-			$location = $this->loadModel('Location', input()->location);
-		} else {
-			if (auth()->valid()) {
-				$location = $this->loadModel('Location', auth()->getRecord()->default_location);
-			}
-			
-		}
-
 		if (auth()->valid()) {
+			// Get default user location
+			$location = $this->loadModel('Location')->fetchDefaultLocation();
+			//	Get other locations to which the user has access
+			$locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
+
+			// Get all the locations for the user
+			if (isset (input()->location)) {
+				$location = $this->loadModel('Location', input()->location);
+			} else {
+				if ($location->location_type != 2) {
+					$area = $location;
+					$location = $location->fetchHomeHealthLocation();
+				} else {
+					$area = $location->fetchLinkedFacility($location->id);
+				}
+				
+			}
+
 			$areas = $this->loadModel('Location')->fetchLinkedFacilities($location->id);
 			smarty()->assign('areas', $areas);
+			smarty()->assign('locations', $locations);	
 		}
 		
 
@@ -204,7 +208,7 @@ class MainController {
 
 		smarty()->assign('currentUrl', currentUrl());
 		// smarty()->assign('location', $location);
-		smarty()->assign('locations', $locations);	
+		
 		
 		smarty()->assign('modules', $modules);
 
