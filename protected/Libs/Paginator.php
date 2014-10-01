@@ -21,6 +21,7 @@ class Paginator {
 		}
 	}
 
+
 	public function paginate($sql, $params, $class) {
 		//	Calculate the total number of pages
 		$this->num_pages = $this->items_total/$this->default_ipp;
@@ -97,7 +98,7 @@ class Paginator {
 					}
 				}
 			} else {
-				$sql .= " FROM `{$table}`";
+				$sql .= " FROM {$table}";
 			}
 
 			if ($addStates) {
@@ -113,7 +114,7 @@ class Paginator {
 					foreach ($addStates as $key => $state) {
 						if (input()->type == 'case_managers' || input()->type == 'healthcare_facilities') {
 							$sql .= "  `healthcare_facility`.`state` = :loc_state{$key} OR";
-						} elseif (input()->type == 'physicians') {
+						} elseif (input()->type == 'Physician') {
 							$sql .= " `physician`.`state` = :loc_state{$key} OR";
 						} elseif (input()->type == 'home_health_clinicians') {
 							$sql .= "";
@@ -139,6 +140,7 @@ class Paginator {
 				}
 				
 			}
+
 
 			//	If there are more than the default items per page in the result then we need to paginate
 			if ($this->items_total > $this->default_ipp) {

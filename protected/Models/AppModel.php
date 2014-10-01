@@ -43,6 +43,7 @@ class AppModel {
 
 		if ($sql == null) {
 			$sql = "SELECT * FROM `{$table}`";
+
 		}
 
 		try {
@@ -164,6 +165,7 @@ class AppModel {
 		} else {
 			$sql .= "public_id=:id";
 		}
+
 		return $this->fetchOne($sql, $params, $class);
 	}
 
@@ -204,17 +206,26 @@ class AppModel {
 	public function fetchManageData($loc = false, $orderby = false) {
 		if (isset (input()->type)) {
 			$model = ucfirst(camelizeString(depluralize(input()->type)));
-			$class = new $model;
-
-			if (isset (input()->page_num)) {
-				$_pageNum = input()->page_num;
-			} else {
-				$_pageNum = false;
-			}
-			$pagination = new Paginator();
-	
-			return $pagination->fetchResults($class, $orderby, $_pageNum, $loc);
+			$class = new $model;			
+		} else {
+			$className = get_called_class();
+			input()->type = $className;
+			$class = new $className;
+			
 		}
+
+		if (isset (input()->page_num)) {
+			$_pageNum = input()->page_num;
+		} else {
+			$_pageNum = false;
+		}
+
+		$pagination = new Paginator();
+		$results = $pagination->fetchResults($class, $orderby, $_pageNum, $loc);
+
+		if (!empty ($results)) {
+			return $results; 
+		} 
 
 		return false;
 	}

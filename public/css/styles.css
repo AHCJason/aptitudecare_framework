@@ -809,16 +809,14 @@ div#pagination a.page-numbers {
 	border-right: 1px solid #444;
 }
 
-#beginning-end {
+#page-count {
 	position: relative;
 	text-align: center;
 	width: 70%;
 	margin: auto;
+	font-size: 12px;
 }
 
-#beginning-end a {
-	margin: 0 15px;
-}
 
 
 /************* New Admit request search results **************/

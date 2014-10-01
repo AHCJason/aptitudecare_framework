@@ -514,6 +514,7 @@ class MainController {
 		}
 
 		$class = $this->loadModel($dataModel)->fetchManageData($location, $_orderBy);
+
 		$classArray[0] = array();
 		if (!empty ($class)) {
 			foreach ($class as $key => $value) {

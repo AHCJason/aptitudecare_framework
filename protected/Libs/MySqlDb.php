@@ -91,7 +91,7 @@ class MySqlDb {
 
 	public function fetchColumnNames($table) {
 		$conn = $this->getConnection();
-		$stmt = $conn->prepare("DESCRIBE {$table}");
+		$stmt = $conn->prepare("DESCRIBE {$this->dbname}.{$table}");
 		$stmt->execute();
 		return $stmt->fetchAll(PDO::FETCH_COLUMN);
 	}
