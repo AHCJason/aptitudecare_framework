@@ -960,3 +960,32 @@ div.drag-hover {
 }
 
 
+
+#timeout-warning {
+	display: none;
+}
+
+#timeout {
+	margin: 50px auto;
+	position: relative;
+	width: 50%;
+	padding: 10px;
+}
+
+#timeout p {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+#login-link {
+	position: relative;
+	text-align: center;
+	width: 50%;
+	margin: 20px auto;
+}
+
+
+#timeout a.button:hover {
+	background: #185687;
+	color: #f1f1f1;
+}
