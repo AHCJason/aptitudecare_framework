@@ -143,6 +143,7 @@ class MainController {
 			} 
 		} 
 
+
 		//	If the module is specified in the url we will look in the module directory first for the view file.
 		//	If it is not there we will look next in the default view directory.
 		if ($module != '') {
@@ -178,7 +179,8 @@ class MainController {
 			// Get default user location
 			$location = $this->loadModel('Location')->fetchDefaultLocation();
 			//	Get other locations to which the user has access
-			$locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
+			// $locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
+			$locations = $this->loadModel('Location')->fetchHomeHealthLocations($this->module);
 
 			// Get all the locations for the user
 			if (isset (input()->location)) {
@@ -193,7 +195,9 @@ class MainController {
 				
 			}
 
-			$areas = $this->loadModel('Location')->fetchLinkedFacilities($location->id);
+			//$areas = $this->loadModel('Location')->fetchLinkedFacilities($location->id);
+			$areas = $this->loadModel('Location')->fetchFacilitiesByHomeHealthId($location->id);
+
 			smarty()->assign('areas', $areas);
 			smarty()->assign('locations', $locations);	
 		}
