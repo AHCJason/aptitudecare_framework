@@ -119,18 +119,18 @@
 		->setConfigDir(APP_PROTECTED_DIR . DS . 'ViewConfigs');
 	
 	$smarty->assign(array(
-		'appName' => APP_NAME,
-		'root' => ROOT,
-		'siteUrl' => SITE_URL,
-		'frameworkUrl' => FRAMEWORK_URL,
-		'frameworkCss' => FRAMEWORK_CSS,
-		'frameworkImg' => FRAMEWORK_IMAGES,
-		'frameworkJs' => FRAMEWORK_JS,
-		'css' => CSS,
-		'images' => IMAGES,
-		'js' => JS,
-		'files' => FILES,
-		'views' => VIEWS,
+		'APP_NAME' => APP_NAME,
+		'ROOT' => ROOT,
+		'SITE_URL' => SITE_URL,
+		'FRAMEWORK_URL' => FRAMEWORK_URL,
+		'FRAMEWORK_CSS' => FRAMEWORK_CSS,
+		'FRAMEWORK_IMAGES' => FRAMEWORK_IMAGES,
+		'FRAMEWORK_JS' => FRAMEWORK_JS,
+		'CSS' => CSS,
+		'IMAGES' => IMAGES,
+		'JS' => JS,
+		'FILES' => FILES,
+		'VIEWS' => VIEWS,
 		'flashMessages' => ''
 	));
 	

@@ -180,7 +180,12 @@ class MainController {
 			$location = $this->loadModel('Location')->fetchDefaultLocation();
 			//	Get other locations to which the user has access
 			// $locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
-			$locations = $this->loadModel('Location')->fetchHomeHealthLocations($this->module);
+			if (isset (input()->module)) {
+				$locations = $this->loadModel('Location')->fetchHomeHealthLocations($this->module);
+			} else {
+				$locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
+			}
+			
 
 			// Get all the locations for the user
 			if (isset (input()->location)) {
@@ -371,7 +376,6 @@ class MainController {
 		} else {
 			$redirect_url = SITE_URL;
 		}
-
 		$this->redirectTo($redirect_url);
 		
 	}	

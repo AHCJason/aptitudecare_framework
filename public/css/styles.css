@@ -151,6 +151,7 @@ table.view th {
 	width: auto;
 	padding: 5px 8px;
 	font-weight: bold;
+	text-align: center;
 }
 
 table.view td {
