@@ -123,7 +123,7 @@ class Authentication extends Singleton {
 
 	public function is_admin() {
 		$user = $this->loadRecord();
-		if ($user->group_id <= 1) {
+		if ($user->group_id == 1 || $user->group_id == 7 || $user->group_id == 8) {
 			return true;
 		} 
 
