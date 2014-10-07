@@ -112,12 +112,26 @@ class MySqlDb {
 
 	public function destroy($data) {
 		$table = $data->fetchTable();
-		$sql = "DELETE FROM `{$table}` WHERE `{$table}`.`public_id`=:id";
-		$params[':id'] = $data->public_id;
+		if (is_numeric($data)) {
+			$column = "id";
+			$params[":id"] = $data->id;
+		} else {
+			$column = "public_id";
+			$params[':id'] = $data->public_id;
+		}
+		$sql = "DELETE FROM `{$table}` WHERE `{$table}`.{$column}=:id";
+		
 
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);
 		$stmt->execute($params);
+	}
+
+	public function destroyQuery($sql, $params = null) {
+		$conn = $this->getConnection();
+		$stmt = $conn->prepare($sql);
+		$stmt->execute($params);
+		return true;
 	}
 
 	public function saveRow($data) {

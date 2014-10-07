@@ -119,6 +119,17 @@ class AppModel {
 
 		return true;
 	}
+
+
+	public function deleteQuery($sql, $params = null) {
+		try {
+			db()->destroyQuery($sql, $params);
+		} catch (PDOException $e) {
+			echo $e;
+		}
+
+		return true;
+	}
 	
 	public function fetchById($id, $className = null) {
 		$params[':id'] = $id;
