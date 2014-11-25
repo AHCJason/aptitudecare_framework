@@ -74,20 +74,30 @@ class AppModel {
 
 	}
 
-	public function save($data = false) {
+	public function update($sql, $params) {
+		return db()->update($sql, $params);		
+	}
+
+	public function save($data = false, $database = false) {
+		if (!$database) {
+			$database = db()->dbname;
+		} 
+
 		try {
 			if ($data != false) {
 				if (!isset ($this->id) || $this->id != '') {
-					db()->updateRow($data);
+					$this->id = db()->saveRow($data, $database);
+					return $this;
 				} else {
-					return db()->saveRow($data);
+					db()->updateRow($data);
 				}
 				
 			} else {
 				if (isset ($this->id) && $this->id != '') {
 					db()->updateRow($this);
 				} else {
-					return db()->saveRow($this);
+					$this->id =  db()->saveRow($this, $database);
+					return $this;
 				}
 				
 			}

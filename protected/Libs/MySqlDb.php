@@ -134,7 +134,7 @@ class MySqlDb {
 		return true;
 	}
 
-	public function saveRow($data) {
+	public function saveRow($data, $database) {
 		$table = $data->fetchTable();
 		$numOfItems = count((array)$data);
 		$count = 1;
@@ -150,7 +150,7 @@ class MySqlDb {
 		// 	$dataSet = $this->setDataStamps($data);
 		// }
 
-		$sql = "INSERT INTO {$table} (";
+		$sql = "INSERT INTO {$database}.{$table} (";
 		foreach ($dataSet as $k => $d) {
 			
 			if ($k != 'table') {
