@@ -11,6 +11,7 @@ class MySqlDb {
 	public $dbname2;
 	public $host;
 	public $host2;
+	public $prefix;
 
 	
 	public function __construct() {
@@ -61,24 +62,20 @@ class MySqlDb {
 	}
 	
 	public function fetchRow($sql, $params, $class) {
+		$className = get_class($class);
+		$table = $class->tableName();
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);
 		$stmt->execute($params);
-		$className = get_class($class);
 		$stmt->setFetchMode(PDO::FETCH_CLASS, $className);
 		
 		$result = $stmt->fetch();
-		if (method_exists($class, 'fetchTable')) {
-			$table = $class->fetchTable();
-		} else {
-			$table = null;
-		}
 
 		if (!empty ($result)) {
 			$this->checkPublicId($result, $table);
 		}
 
-		
+
 		return $result;
 	}
 
@@ -135,7 +132,7 @@ class MySqlDb {
 	}
 
 	public function saveRow($data, $database) {
-		$table = $data->fetchTable();
+		$table = $data->tableName();
 		$numOfItems = count((array)$data);
 		$count = 1;
 
@@ -194,10 +191,9 @@ class MySqlDb {
 
 
 	public function updateRow($data) {
-		$table = $data->fetchTable();
+		$table = $data->tableName();
 		$numOfItems = count((array)$data);
 		$count = 1;
-
 
 		$dataSet = $this->setDataStamps($data);
 
@@ -245,9 +241,11 @@ class MySqlDb {
 						}
 					}
 				} else {
-					if ($r['public_id'] == '') {
-						$r['public_id'] = getRandomString();
-						$this->updatePublicId($r, $tables);
+					if (isset ($r['public_id'])) {
+						if ($r['public_id'] == '') {
+							$r['public_id'] = getRandomString();
+							$this->updatePublicId($r, $tables);
+						}
 					}
 				}
 			}

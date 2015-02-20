@@ -2,6 +2,7 @@
 
 class AppModel {
 
+	protected $prefix;
 
 	public function generate($id = null, $class = null) {
 		if ($id == null) {
@@ -29,6 +30,7 @@ class AppModel {
 		}
 		
 		$class = new $called_class;
+
 		try {
 			return db()->fetchRow($sql, $params, $class);
 		} catch (PDOException $e) {
@@ -39,13 +41,13 @@ class AppModel {
 	public function fetchAll($sql = null, $params = array()) {
 		$called_class = get_called_class();
 		$class = new $called_class;
-		$table = $class->fetchTable();
+		$table = $this->tableName();
 
 		if ($sql == null) {
 			$sql = "SELECT * FROM `{$table}`";
 
 		}
-
+		
 		try {
 			return db()->fetchRows($sql, $params, $class);
 		} catch (PDOException $e) {
@@ -151,9 +153,8 @@ class AppModel {
 		}
 
 		$class = new $model;
-		$table = $class->fetchTable();
-		
-		
+		$table = $class->tableName();
+
 		$sql = "SELECT `{$table}`.*";
 		$belongsTo = $class->fetchBelongsTo();
 
@@ -186,7 +187,6 @@ class AppModel {
 		} else {
 			$sql .= "public_id=:id";
 		}
-
 		return $this->fetchOne($sql, $params, $class);
 	}
 
@@ -268,7 +268,7 @@ class AppModel {
 
 
 	public function fetchColumnNames() {
-		$table = $this->fetchTable();
+		$table = $this->prefix . "_" . $this->fetchTable();
 		$columnNames =  db()->fetchColumnNames($table);
 
 		foreach ($columnNames as $n) {
@@ -286,7 +286,7 @@ class AppModel {
 		}
 		$state = trim($state, ", ");
 
-		$sql = "SELECT count(id) AS items FROM {$this->table} WHERE {$this->table}.state IN ($state)";
+		$sql = "SELECT count(id) AS items FROM {$this->tableName()} WHERE {$this->tableName()}.state IN ($state)";
 
 		return $this->fetchOne($sql);
 	}
@@ -296,6 +296,29 @@ class AppModel {
 		return $this->last_name . ", " . $this->first_name;
 	}
 	
+	public function tableName() {
+		return $this->prefix . "_" . $this->table;
+	}
+
+
+	public function loadTable($name = false) {
+		if ($name) {
+			if (file_exists (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
+				require_once (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');
+			} 
+
+			if (class_exists($name)) {
+				$class = new $name;
+				return $class;
+			} else {
+				smarty()->assign('message', "Could not find the class {$name}");
+				$this->loadView('error', 'index');
+				exit;
+			}
+		}
+
+		return false;
+	}
 	
 	
 	

@@ -12,6 +12,8 @@ class MainController {
 	protected $module;
 	protected $page;
 	protected $action;
+	protected $navigation = 'main';
+	protected $searchBar = 'main';
 	protected $template = 'main';
 	protected $helper = null;
 	
@@ -87,6 +89,7 @@ class MainController {
 			exit;
 		}
 
+
 		if ($id) {
 			return $class->fetchById($id);
 		} else {
@@ -133,10 +136,10 @@ class MainController {
 
 		
 		smarty()->assign('logo', $logo);
+		smarty()->assign('navigation', $this->navigation);
+		smarty()->assign('searchBar', $this->searchBar);
 
 		//	Make sure the session is valid and get the user info
-		//	Re-direction is failing here, for some reason we are not passing the 
-		//	auth()->isLoggedIn() test
 		if (!auth()->isLoggedIn()) {
 			if ($folder != 'login') {
 				$this->redirect(array('page' => 'login', 'action' => 'index'));
@@ -166,7 +169,7 @@ class MainController {
 			
 		}
 
-		
+		// If a helper is called, load it
 		if ($this->helper != null) {
 			$helper = $this->loadHelper($this->helper, $this->module);
 			smarty()->assignByRef('patientTools', $helper);
@@ -175,36 +178,62 @@ class MainController {
 		$this->page = ucfirst($folder);
 		$this->action = $name;
 
+
 		if (auth()->valid()) {
 			// Get default user location
 			$location = $this->loadModel('Location')->fetchDefaultLocation();
+
 			//	Get other locations to which the user has access
-			// $locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
 			if (isset (input()->module)) {
-				$locations = $this->loadModel('Location')->fetchHomeHealthLocations($this->module);
-			} else {
-				$locations = $this->loadModel('Location')->fetchOtherLocations($this->module);
-			}
-			
+				if (input()->module == 'HomeHealth') {
+					$locations = $location->fetchHomeHealthLocations($this->module);
+				} elseif (input()->module == 'Dietary') {
+					$locations = $location->fetchFacilities();
+				}
+				
+			} 
 
 			// Get all the locations for the user
 			if (isset (input()->location)) {
-				$location = $this->loadModel('Location', input()->location);
+				$selectedLocation = $this->loadModel('Location', input()->location);
 			} else {
-				if ($location->location_type != 2) {
-					$area = $location;
-					$location = $location->fetchHomeHealthLocation();
+				if (isset (input()->module)) {
+					if (input()->module == 'HomeHealth') {
+						// need to get the users default location
+						$selectedLocation = $this->loadModel('Location', auth()->getRecord()->default_location);
+						if ($selectedLocation->location_type != 2) {
+							$area = $selectedLocation;
+							$selectedLocation = $selectedLocation->fetchHomeHealthLocation();
+						} else {
+							$area = $selectedLocation->fetchLinkedFacility($location->id);
+						}
+
+						$areas = $this->loadModel('Location')->fetchFacilitiesByHomeHealthId($location->id);
+						smarty()->assign('areas', $areas);
+					} elseif (input()->module == 'Dietary') {
+						$location = $this->loadModel('Location', auth()->getRecord()->default_location);
+						if ($location->location_type == 1) {
+							$selectedLocation = $this->loadModel('UserLocation')->fetchUserFacility();
+						} else {
+							session()->setFlash("You do not have permission to access this page", 'error');
+							$this->redirect();
+						}
+						
+					}
 				} else {
-					$area = $location->fetchLinkedFacility($location->id);
+					// need to get list of available locations
+					$selectedLocation = $this->loadModel('Location', auth()->getRecord()->default_location);
+					$locations = $selectedLocation->fetchOtherLocations();
+
 				}
-				
+
 			}
 
-			//$areas = $this->loadModel('Location')->fetchLinkedFacilities($location->id);
-			$areas = $this->loadModel('Location')->fetchFacilitiesByHomeHealthId($location->id);
+			
 
-			smarty()->assign('areas', $areas);
+			
 			smarty()->assign('locations', $locations);	
+			smarty()->assign('selectedLocation', $selectedLocation);
 		}
 		
 

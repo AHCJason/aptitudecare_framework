@@ -2,6 +2,7 @@
 
 class Authentication extends Singleton {
 	
+	public $prefix = 'ac';
 	public $table = 'user';
 	protected $usernameField = 'email';
 	protected $passwordField = 'password';
@@ -61,7 +62,7 @@ class Authentication extends Singleton {
 	
 	
 	protected function getRecordFromSession() {
-		$sql = "select {$this->table}.*, `module`.`public_id` as `mod_pubid`, `module`.`name` as 'module_name' from {$this->table} inner join `module` on `module`.`id`={$this->table}.`default_module` where {$this->table}.`public_id`=:public_id";
+		$sql = "select {$this->tableName()}.*, `ac_module`.`public_id` as `mod_pubid`, `ac_module`.`name` as 'module_name' from {$this->tableName()} inner join `ac_module` on `ac_module`.`id`={$this->tableName()}.`default_module` where {$this->tableName()}.`public_id`=:public_id";
 		$params['public_id'] = session()->authentication_record;
 		$this->record = db()->fetchRow($sql, $params, $this);
 				
@@ -78,7 +79,7 @@ class Authentication extends Singleton {
 	 */
 	
 	public function fetchUserByName($username) {
-		$sql = "select {$this->table}.*, `module`.`public_id` as `mod_pubid`, `module`.`name` as 'module_name' from {$this->table} inner join `module` on `module`.`id`={$this->table}.`default_module` where {$this->table}.`email`=:username ";
+		$sql = "select {$this->tableName()}.*, `ac_module`.`public_id` as `mod_pubid`, `ac_module`.`name` as 'module_name' from {$this->tableName()} inner join `ac_module` on `ac_module`.`id`={$this->tableName()}.`default_module` where {$this->tableName()}.`email`=:username ";
 		$params = array(
 			":username" => $username,
 		);
@@ -152,6 +153,11 @@ class Authentication extends Singleton {
 			return true;
 		}
 		return false;
+	}
+
+
+	public function tableName() {
+		return $this->prefix . "_" . $this->table;
 	}
 	
 	
