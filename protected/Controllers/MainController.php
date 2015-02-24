@@ -191,7 +191,9 @@ class MainController {
 					$locations = $location->fetchFacilities();
 				}
 				
-			} 
+			} else {
+				$locations = $location->fetchOtherLocations();
+			}
 
 			// Get all the locations for the user
 			if (isset (input()->location)) {

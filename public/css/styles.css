@@ -200,7 +200,11 @@ img.add-button {
 
 .text-grey { color: #ccc; }
 .text-darker-grey { color: #999; }
+.text-red { color: red; }
+.text-blue { color: blue; }
 .background-red { background: #FF6A6A; }
+.background-grey { background: #d8d8d8; }
+.background-blue { background: #185687; color: #f1f1f1; }
 .font-normal { font-weight: normal; }
 
 .horizontal-break {

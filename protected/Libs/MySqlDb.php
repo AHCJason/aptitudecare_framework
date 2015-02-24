@@ -108,7 +108,7 @@ class MySqlDb {
 	}
 
 	public function destroy($data) {
-		$table = $data->fetchTable();
+		$table = $data->tableName();
 		if (is_numeric($data)) {
 			$column = "id";
 			$params[":id"] = $data->id;
