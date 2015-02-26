@@ -359,18 +359,7 @@ class MainController {
 	private function redirectTo($url) {
 		header("Location: " . $url);
 		exit;
-	}
-		
-
-
-	public function paginate($menu, $location) {
-		$pagination = new Paginator();
-		pr ($location); die();
-	}
-	
-
-
-
+	}	
 
 	
 	/*

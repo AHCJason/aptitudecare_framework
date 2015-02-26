@@ -22,7 +22,7 @@ class Paginator {
 	}
 
 
-	public function paginate($sql, $params, $class) {
+	public function paginate($sql, $params, $class, $current_page = false, $default_ipp = false) {
 		//	Calculate the total number of pages
 		$this->num_pages = $this->items_total/$this->default_ipp;
 

@@ -39,8 +39,10 @@ class AppModel {
 	}
 	
 	public function fetchAll($sql = null, $params = array()) {
+		
 		$called_class = get_called_class();
 		$class = new $called_class;
+
 		$table = $this->tableName();
 
 		if ($sql == null) {
@@ -318,8 +320,7 @@ class AppModel {
 		}
 
 		return false;
-	}
-	
+	}	
 	
 	
 }
