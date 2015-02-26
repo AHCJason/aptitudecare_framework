@@ -180,62 +180,7 @@ class MainController {
 
 
 		if (auth()->valid()) {
-			// Get default user location
-			$location = $this->loadModel('Location')->fetchDefaultLocation();
-
-			//	Get other locations to which the user has access
-			if (isset (input()->module)) {
-				if (input()->module == 'HomeHealth') {
-					$locations = $location->fetchHomeHealthLocations($this->module);
-				} elseif (input()->module == 'Dietary') {
-					$locations = $location->fetchFacilities();
-				}
-				
-			} else {
-				$locations = $location->fetchOtherLocations();
-			}
-
-			// Get all the locations for the user
-			if (isset (input()->location)) {
-				$selectedLocation = $this->loadModel('Location', input()->location);
-			} else {
-				if (isset (input()->module)) {
-					if (input()->module == 'HomeHealth') {
-						// need to get the users default location
-						$selectedLocation = $this->loadModel('Location', auth()->getRecord()->default_location);
-						if ($selectedLocation->location_type != 2) {
-							$area = $selectedLocation;
-							$selectedLocation = $selectedLocation->fetchHomeHealthLocation();
-						} else {
-							$area = $selectedLocation->fetchLinkedFacility($location->id);
-						}
-
-						$areas = $this->loadModel('Location')->fetchFacilitiesByHomeHealthId($location->id);
-						smarty()->assign('areas', $areas);
-					} elseif (input()->module == 'Dietary') {
-						$location = $this->loadModel('Location', auth()->getRecord()->default_location);
-						if ($location->location_type == 1) {
-							$selectedLocation = $this->loadModel('UserLocation')->fetchUserFacility();
-						} else {
-							session()->setFlash("You do not have permission to access this page", 'error');
-							$this->redirect();
-						}
-						
-					}
-				} else {
-					// need to get list of available locations
-					$selectedLocation = $this->loadModel('Location', auth()->getRecord()->default_location);
-					$locations = $selectedLocation->fetchOtherLocations();
-
-				}
-
-			}
-
-			
-
-			
-			smarty()->assign('locations', $locations);	
-			smarty()->assign('selectedLocation', $selectedLocation);
+			$this->getLocations();
 		}
 		
 
@@ -416,6 +361,12 @@ class MainController {
 		exit;
 	}
 		
+
+
+	public function paginate($menu, $location) {
+		$pagination = new Paginator();
+		pr ($location); die();
+	}
 	
 
 

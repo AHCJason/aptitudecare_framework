@@ -66,6 +66,15 @@ div#areas {
 	top: 30px;
 }
 
+.select-dropdown {
+	position: absolute;
+}
+
+.select-dropdown.right {
+	right: 0;
+	top: 30px;
+}
+
 a.button {
 	background: #686868;
 	border-radius: 3px;
