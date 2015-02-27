@@ -23,8 +23,6 @@ class Paginator {
 
 
 	public function paginate($sql, $params, $class, $current_page = false, $default_ipp = false) {
-		//	Calculate the total number of pages
-		$this->num_pages = $this->items_total/$this->default_ipp;
 
 		//	Need to get the starting and stopping counts based on the current page and number 
 		//	of items per page
@@ -39,7 +37,19 @@ class Paginator {
 		$sql .= " LIMIT {$this->low}, {$this->default_ipp}";
 
 		smarty()->assignByRef('pagination', $this);
-		return db()->fetchRows($sql, $params, $class);
+		$result = db()->fetchRows($sql, $params, $class);
+
+
+		//	Calculate the total number of pages
+		$this->num_pages = $this->items_total/$this->default_ipp;
+
+		//	If there are more than the default items per page in the result then we need to paginate
+		if ($this->items_total > $this->default_ipp) {
+			return $result;
+		} else {
+			return db()->fetchRows($sql, $params, $class);
+		}
+
 	}
 
 

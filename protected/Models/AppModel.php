@@ -47,6 +47,13 @@ class AppModel {
 
 		if ($sql == null) {
 			$sql = "SELECT * FROM `{$table}`";
+			if (!empty($params)) {
+				foreach ($params as $k => $p) {
+					$sql .= " WHERE {$k} = {$p} AND";
+				}
+
+				$sql = trim($sql, "AND");
+			}
 
 		}
 		

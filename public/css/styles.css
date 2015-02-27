@@ -46,25 +46,6 @@ a {
 	margin-bottom: 25px;
 }
 
-#modules {
-	position: absolute;
-	top: 30px;
-}
-
-#patient-search {
-	position: relative;
-	top: -25px;
-}
-
-#patient-search input[type="text"] {
-	width: 250px;
-}
-
-div#areas {
-	position: absolute;
-	right: 15px;
-	top: 30px;
-}
 
 .select-dropdown {
 	position: absolute;
@@ -106,26 +87,6 @@ div.button > a {
 div.button > a:hover {
 	background: #999;
 	color: #000;
-}
-
-div#date-header {
-	margin: 0 auto;
-	width: 60%;
-	max-width: 550px;
-}
-
-div#date-header h2 {
-	margin: 0;
-}
-
-.date-header-img {
-	width: 10%;
-	float: left;
-}
-
-.date-header-text-center {
-	width: 80%;
-	float: left;
 }
 
 table.form {
@@ -215,6 +176,7 @@ img.add-button {
 .background-grey { background: #d8d8d8; }
 .background-blue { background: #185687; color: #f1f1f1; }
 .font-normal { font-weight: normal; }
+.line-space { line-height: 30px; }
 
 .horizontal-break {
 	border-bottom: 1px dotted #c8c8c8;
@@ -596,105 +558,6 @@ div#login-box input[type="text"], input[type="password"] {
 }
 
 
-
-
-/****************** Dashboard Page *******************/
-
-div#locations {
-	text-align: center;
-	margin: 5px auto;
-
-}
-div#locations select {
-	font-size: 24px;
-	height: 30px;
-	border: 1px dotted #ccc;
-	background: none;
-}
-
-#optgroup h1 {
-	font-size: 14px;
-}
-
-div#location-wrapper {
-	position: relative;
-	width: 100%;
-	margin: 25px auto;
-}
-
-div.location-container {
-	width: 14.2857143%;
-	min-height: 100px;
-	float: left;
-}
-
-div.location-day-box {
-	height: auto !important;
-	min-height: 180px;
-	border-radius: 3px;
-	padding: 5%;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	background: none;
-}
-
-div.location-day-box-color {
-	background-color: #e6e6e6;
-}
-
-div.location-admit {
-	background: #75dc6d;
-	font-size: 11px;
-	line-height: 12px;
-	border-radius: 3px;
-	padding: 5px;
-	margin-top: 3px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-}
-
-div.location-admit-pending {
-	font-size: 11px;
-	line-height: 12px;
-	border-radius: 3px;
-	padding: 5px;
-	margin-top: 3px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-}
-
-.box-blue {
-	background: #6BBEFF;
-}
-
-.box-white {
-	background: #f1f1f1;
-	border: 1px solid #c8c8c8;
-}
-
-.location-discharge {
-	background: #FF6A6A;
-	font-size: 11px;
-	font-weight: normal;
-	line-height: 14px;
-	border-radius: 3px;
-	padding: 5px;
-	margin-top: 3px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-}
-
-.box-title {
-	margin: 0 0 4px 2px;
-	color: #b4b4b4;
-}
-
-.day-title {
-	font-size: 12px;
-	font-weight: bold;
-	padding-left: 4%;
-	color: #444;
-}
 
 
 /*********** Errors *********************/
