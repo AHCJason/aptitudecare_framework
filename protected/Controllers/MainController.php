@@ -72,13 +72,19 @@ class MainController {
 	 */
 
 	
-	public function loadModel($name, $id = false) {
-		if (file_exists (FRAMEWORK_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
-			require_once (FRAMEWORK_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');		
-		} elseif (file_exists (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
-			require_once (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');
-		} elseif (file_exists ( MODULES_DIR . DS . $this->module . DS . 'Models' . DS . $name . '.php')) {
-			require_once ( MODULES_DIR . DS . $this->module . DS . 'Models' . DS . $name . '.php');
+	public function loadModel($name, $id = false, $module = false) {
+		if ($module) {
+			if (file_exists (MODULES_DIR . DS . $module . DS . 'Models' . DS . $name . '.php')) {
+				require_once ( MODULES_DIR . DS . $module . DS . 'Models' . DS . $name . '.php');
+			}
+		} else {
+			if (file_exists (FRAMEWORK_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
+				require_once (FRAMEWORK_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');		
+			} elseif (file_exists (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
+				require_once (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');
+			} elseif (file_exists ( MODULES_DIR . DS . $this->module . DS . 'Models' . DS . $name . '.php')) {
+				require_once ( MODULES_DIR . DS . $this->module . DS . 'Models' . DS . $name . '.php');
+			}
 		}
 		
 		if (class_exists($name)) {

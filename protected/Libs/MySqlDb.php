@@ -136,8 +136,6 @@ class MySqlDb {
 		$numOfItems = count((array)$data);
 		$count = 1;
 
-
-
 		// if (isset ($data->public_id)) {
 			$dataSet = $this->setDataStamps($data);
 		// }  else {
