@@ -28,8 +28,19 @@ class AppModel {
 		} else {
 			$called_class = get_called_class();
 		}
-		
 		$class = new $called_class;
+
+		if ($sql == null) {
+			$sql = "SELECT * FROM `{$this->tableName()}`";
+			if (!empty($params)) {
+				foreach ($params as $k => $p) {
+					$sql .= " WHERE {$k} = {$p} AND";
+				}
+
+				$sql = trim($sql, "AND");
+			}
+
+		}
 
 		try {
 			return db()->fetchRow($sql, $params, $class);
@@ -62,6 +73,19 @@ class AppModel {
 		} catch (PDOException $e) {
 			echo $e;
 		}
+	}
+
+
+
+	public function fetchByColumn ($column, $value) {
+		$sql = "SELECT t.* FROM {$this->tableName()} t WHERE :column = :value";
+		
+		$params = array(
+			":column" => $column,
+			":value" => $value
+		);
+
+		return db()->fetchRows($sql, $params, $this);
 	}
 
 

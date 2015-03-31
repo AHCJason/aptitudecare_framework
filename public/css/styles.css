@@ -43,6 +43,11 @@ a {
 }
 
 
+.bold-link a:hover {
+	font-weight: bold;
+}
+
+
 /********* General Site-wide Items **************/
 
 

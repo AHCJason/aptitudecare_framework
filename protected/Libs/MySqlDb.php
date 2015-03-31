@@ -45,14 +45,16 @@ class MySqlDb {
 	 
 	public function fetchRows($sql, $params, $class) {
 		$className = get_class($class);
+		// Get the table name for the called class	
+		$table = $class->fetchTable();
+
+
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);
 		$stmt->execute($params);
 		$stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, $className);
 		$result = $stmt->fetchAll();
 
-		// Get the table name for the called class	
-		$table = $class->fetchTable();
 		//	Check if the public_id already has a value
 		if ($className != 'AdmissionDashboard') {
 			$this->checkPublicId($result, $table);

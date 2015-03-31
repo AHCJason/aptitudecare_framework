@@ -9,9 +9,9 @@
 
 class MainController {
 
-	protected $module;
-	protected $page;
-	protected $action;
+	public $module;
+	public $page;
+	public $action;
 	protected $navigation = 'main';
 	protected $searchBar = 'main';
 	protected $template = 'main';
@@ -131,6 +131,11 @@ class MainController {
 	public function loadView($folder, $name, $module = '') {		
 		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);
 		smarty()->assign('module', $module);
+		smarty()->assign("this", $this);
+
+		$this->module = strtolower($module);
+		$this->page = strtolower($folder);
+		$this->action = strtolower($name);
 
 		if (file_exists(SITE_DIR . '/public/img/logo.jpg')) {
 			$logo = IMAGES . '/logo.jpg';
@@ -233,10 +238,9 @@ class MainController {
 	 * -------------------------------------------------------------------------
 	 */
 	
-	public function loadElement($name) {
-		$obj = new PageController();
-		$element = $obj->element($name);
-		return $element;
+	public function loadElement($name, $var = array()) {
+		smarty()->assign("var", $var);
+		smarty()->display("elements/{$name}.tpl");
 	}
 
 

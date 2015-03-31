@@ -200,7 +200,6 @@
 			return $acl;
 		}
 	}
-	
 
 	if (! function_exists('smarty')) {
 		function smarty() {
