@@ -1,7 +1,7 @@
 <?php
 
 /*
- *	All other classes will extend the MainController, so use functions here that need to be 
+ *	All other classes will extend the MainController, so use functions here that need to be
  *	used in all other controllers.
  *
  */
@@ -9,14 +9,11 @@
 
 class MainController {
 
-	public $module;
 	public $page;
 	public $action;
-	protected $navigation = 'main';
-	protected $searchBar = 'main';
 	protected $template = 'main';
 	protected $helper = null;
-	
+
 
 	/*
 	 * -------------------------------------------------------------------------
@@ -24,7 +21,7 @@ class MainController {
 	 * -------------------------------------------------------------------------
 	 */
 
-	public function __construct() {			
+	public function __construct() {
 		// Load any other components defined in the child class
 		if (!empty($this->components)) {
 			foreach($this->components as $c) {
@@ -47,7 +44,7 @@ class MainController {
 			$model = getModelName(input()->page);
 			$class = $this->loadModel($model);
 
-			$class->public_id = input()->id;			
+			$class->public_id = input()->id;
 			if ($class->delete()) {
 				return true;
 			}
@@ -58,20 +55,20 @@ class MainController {
 		return false;
 	}
 
-	
 
 
 
-	
+
+
 	/*
 	 *
 	 * -------------------------------------------------------------
 	 *  LOAD MODELS, VIEWS, PLUGINS, COMPONENTS, AND HELPERS
 	 * -------------------------------------------------------------
-	 * 
+	 *
 	 */
 
-	
+
 	public function loadModel($name, $id = false, $module = false) {
 		if ($module) {
 			if (file_exists (MODULES_DIR . DS . $module . DS . 'Models' . DS . $name . '.php')) {
@@ -79,14 +76,14 @@ class MainController {
 			}
 		} else {
 			if (file_exists (FRAMEWORK_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
-				require_once (FRAMEWORK_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');		
+				require_once (FRAMEWORK_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');
 			} elseif (file_exists (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
 				require_once (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');
 			} elseif (file_exists ( MODULES_DIR . DS . $this->module . DS . 'Models' . DS . $name . '.php')) {
 				require_once ( MODULES_DIR . DS . $this->module . DS . 'Models' . DS . $name . '.php');
 			}
 		}
-		
+
 		if (class_exists($name)) {
 			$class = new $name;
 		} else {
@@ -109,9 +106,9 @@ class MainController {
 				//	If the table variable isn't set in the model, then just return an empty object.
 				return $class;
 			}
-			
+
 		}
-		
+
 	}
 
 
@@ -128,96 +125,36 @@ class MainController {
 	 *
 	 */
 
-	public function loadView($folder, $name, $module = '') {		
-		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);
-		smarty()->assign('module', $module);
-		smarty()->assign("this", $this);
-
-		$this->module = strtolower($module);
+	public function loadView($folder, $name, $module = '') {
+		$this->getSiteInfo($folder, $name, $module);
+		$this->$name();
 		$this->page = strtolower($folder);
 		$this->action = strtolower($name);
-
-		if (file_exists(SITE_DIR . '/public/img/logo.jpg')) {
-			$logo = IMAGES . '/logo.jpg';
-		} elseif (file_exists(SITE_DIR . '/public/img/logo.png')) {
-			$logo = IMAGES . '/logo.png';
-		} else {
-			$logo = FRAMEWORK_IMAGES . '/aptitudecare.png';
-		}
-
-		
-		smarty()->assign('logo', $logo);
-		smarty()->assign('navigation', $this->navigation);
-		smarty()->assign('searchBar', $this->searchBar);
+		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);
+		smarty()->assign("this", $this);
 
 		//	Make sure the session is valid and get the user info
 		if (!auth()->isLoggedIn()) {
 			if ($folder != 'login') {
 				$this->redirect(array('page' => 'login', 'action' => 'index'));
-			} 
-		} 
-
-
-		//	If the module is specified in the url we will look in the module directory first for the view file.
-		//	If it is not there we will look next in the default view directory.
-		if ($module != '') {
-			$this->module = $module;
-			if (file_exists(MODULES_DIR . DS . $module . DS . 'Views/' . underscoreString($folder) . DS . $name . '.tpl')) {
-				smarty()->assign('content', MODULES_DIR . DS . $module . DS . 'Views/' . underscoreString($folder) . '/' . $name . '.tpl');
-			} else {
-				smarty()->assign('content', underscoreString($folder) . '/' . $name . '.tpl');
 			}
-		
-		//	If no module is set then we will get the content from the default view directory.
-		//	!!!!!! TO-DO: Probably should check if the file exists and if not show a pretty error page. !!!!!!!!!!!
-		} else {
-			$this->module = '';
-			if (file_exists (VIEWS . DS . underscoreString($folder) . DS . $name . '.tpl')) {
-				smarty()->assign('content', underscoreString($folder) . '/' . $name . '.tpl');
-			} else {
-				smarty()->assign('content', "error/no-template.tpl");
-			}
-			
 		}
 
 		// If a helper is called, load it
 		if ($this->helper != null) {
 			$helper = $this->loadHelper($this->helper, $this->module);
-			smarty()->assignByRef('patientTools', $helper);
+			smarty()->assignByRef(lcfirst($this->helper), $helper);
 		}
 
 		$this->page = ucfirst($folder);
 		$this->action = $name;
 
-
-		if (auth()->valid()) {
-			$this->getLocations();
-		}
-		
-
-		if ($module != '') {
-			// Get the modules to which the user has access
-			$modules = $this->loadModel('Module')->fetchUserModules(auth()->getPublicId());
-		} else {
-			$modules = '';
-		}	
-
 		smarty()->assign('currentUrl', currentUrl());
 		// smarty()->assign('location', $location);
-		
-		
-		smarty()->assign('modules', $modules);
-
-		//	If no module variable is present get the session module
-		if ($module == '') {
-			$module = session()->getModule();
-		}
-
-		smarty()->assign('module', $module);
 
 		// Check session for errors to be displayed
 		session()->checkFlashMessages();
-		
+
 		//	If is_micro is set in the url then display a blank template
 		if (isset (input()->isMicro) && input()->isMicro == 1) {
 			$this->template = 'blank';
@@ -225,7 +162,7 @@ class MainController {
 
 		// set the base template
 		smarty()->display("layouts/{$this->template}.tpl");
-		
+
 	}
 
 
@@ -237,7 +174,7 @@ class MainController {
 	 *  LOAD AN ELEMENT
 	 * -------------------------------------------------------------------------
 	 */
-	
+
 	public function loadElement($name, $var = array()) {
 		smarty()->assign("var", $var);
 		smarty()->display("elements/{$name}.tpl");
@@ -251,11 +188,11 @@ class MainController {
 	 *  LOAD A PLUGIN
 	 * -------------------------------------------------------------------------
 	 */
-	
+
 	public function loadPlugin($name) {
 		if (file_exists (PROTECTED_DIR . '/plugins/' . $name . '.php')) {
 			require (PROTECTED_DIR . '/plugins/' . $name . '.php');
-		} 
+		}
 	}
 
 
@@ -266,7 +203,7 @@ class MainController {
 	 *  LOAD A HELPER -- this is a view helper
 	 * -------------------------------------------------------------------------
 	 */
-	
+
 	public function loadHelper($name, $module = null) {
 
 		if (file_exists (FRAMEWORK_PROTECTED_DIR . '/Views/helpers/' . $name . 'Helper.php')) {
@@ -275,7 +212,7 @@ class MainController {
 			require (APP_PROTECTED_DIR . '/Views/helpers/' . $name . 'Helper.php');
 		} elseif (file_exists (MODULES_DIR . DS . $module . DS . 'Views/helpers/' . $name . 'Helper.php')) {
 			require (MODULES_DIR . DS . $module . DS . 'Views/helpers/' . $name . 'Helper.php');
-		} 
+		}
 
 		$className = $name . 'Helper';
 
@@ -291,12 +228,12 @@ class MainController {
 	 *  LOAD A COMPONENT CLASS
 	 * -------------------------------------------------------------------------
 	 */
-	
+
 	public function loadComponent($name) {
 		$component = new $name;
 		return $component;
 	}
-	
+
 
 
 	/*
@@ -304,15 +241,15 @@ class MainController {
 	 *  LOAD AN ALTERNATE TEMPLATE TO USE
 	 * -------------------------------------------------------------------------
 	 */
-	
+
 	public function template($name = false) {
 		global $config;
 		if ($name) {
 			$config['main_template'] = $name.'.tpl';
 		}
-		
+
 	}
-	
+
 
 
 	/*
@@ -320,32 +257,32 @@ class MainController {
 	 *  SET A VARIABLE TO BE LOADED WITH THE CLASS
 	 * -------------------------------------------------------------------------
 	 */
-	
+
 	public function set($name, $var) {
 		$this->$name = $var;
 	}
-	
-	
 
 
 
 
-			
+
+
+
 	/*
 	 *
 	 * -------------------------------------------------------------
 	 *  PAGE REDIRECTION
 	 * -------------------------------------------------------------
 	 */
-		
-	public function redirect($params = false) {	
 
-		if (is_array($params)) {	
+	public function redirect($params = false) {
+
+		if (is_array($params)) {
 				$redirect_url = SITE_URL . "/?";
 
 				if (isset ($params['page'])) {
 					$params['page'] =  strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $params['page']));
-				} 
+				}
 
 				if (isset ($params['action'])) {
 					if ($params['action'] == 'index') {
@@ -363,23 +300,23 @@ class MainController {
 			$redirect_url = SITE_URL;
 		}
 		$this->redirectTo($redirect_url);
-		
-	}	
-	
+
+	}
+
 	private function redirectTo($url) {
 		header("Location: " . $url);
 		exit;
-	}	
+	}
 
-	
+
 	/*
 	 *
 	 * -------------------------------------------------------------
 	 *  VALIDATE DATA
 	 * -------------------------------------------------------------
-	 * 
+	 *
 	 */
-	 
+
 	 protected function validateData($dataArray = array(), $flash_message = false, $redirect_to = false) {
 	 	$fail = false;
 		$returnData = array();
@@ -395,30 +332,30 @@ class MainController {
 				}
 			}
 		}
-		
+
 		if ($fail) {
 			exit;
 		}
-		
-		return $returnData;		
+
+		return $returnData;
 
 	 }
-	
-	
 
 
 
-	
+
+
+
 	/*
 	 *
 	 * -------------------------------------------------------------
 	 *  Looks in a folder and returns the contents
 	 * -------------------------------------------------------------
-	 * 
+	 *
 	 * This method is especially useful for folders with photos (i.e. - for the slideshow on the home page)
 	 *
 	 */
-	
+
 	protected function directoryToArray($directory, $recursive) {
 	    $array_items = array();
 	    if ($handle = opendir($directory)) {
@@ -441,20 +378,20 @@ class MainController {
 		    echo "<br />Make sure $directory exists and try again.";
 		    exit;
 	    }
-	    
+
 	    foreach ($array_items as $item) {
 		    $explodedArray[] = (explode('/', $item));
 	    }
-	    
+
 	    foreach ($explodedArray as $a) {
 		    $filteredArray[] = array_pop($a);
 
 	    }
-	    
+
 	    return $filteredArray;
 	}
-		
-	
+
+
 
 
 
@@ -510,11 +447,11 @@ class MainController {
 				foreach ($value as $k => $v) {
 					$classArray[$key][$k] = $v;
 					if (!in_array($k, $value->fetchFields())) {
-						unset($classArray[$key][$k]); 		
+						unset($classArray[$key][$k]);
 					}
-					
+
 				}
-				
+
 			}
 		}
 
@@ -566,7 +503,7 @@ class MainController {
 		$additionalData = $this->getAdditionalData($data);
 		$dataArray = $this->getColumnHeaders($data);
 		smarty()->assignByRef('dataArray', $dataArray);
-		
+
 	}
 
 
@@ -585,71 +522,42 @@ class MainController {
 				}
 			}
 		}
-		
+
 
 		return $data;
 	}
 
 
 
-
-	public function getArea() {
-
-		if (isset(input()->location)) {
-			// If the location is set in the url, get the location by the public_id
-			$location = $this->loadModel('Location', input()->location);
-			if (isset (input()->area)) {
-				$area = $location->fetchLinkedFacility(input()->area);
-			} else {
-				$area = $location->fetchLinkedFacility($location->id);
-			}
-		} else {
-			// Get the users default location from the session
-			$location = $this->loadModel('Location', auth()->getDefaultLocation());
-			$area = $location->fetchLinkedFacility($location->id);
-		}
-
-		smarty()->assignByRef('loc', $location);
-		smarty()->assignByRef('selectedArea', $area);
-
-		return $area;
-
-	}
-	
-	
-	
-
-
-	
 	/*
 	 * -------------------------------------------------------------
 	 *  PHPMailer -- send emails
 	 * -------------------------------------------------------------
-	 * 
+	 *
 	 */
-	 
+
 	public function sendEmail($data) {
-		
+
 		global $config;
 		global $params;
-		
+
 		$mail = new PHPMailer(true);
 		$mail->IsSMTP();
-		
+
 		/**
 		 * These mail settings are specific to bluehost
 		 */
-		
-		
-		try {				
-			$mail->SMTPDebug = 2;                    
-			$mail->SMTPAuth = true;    
-			$mail->SMTPSecure = "ssl";              
-			$mail->Host = $config['email_host'];  // email must be sent from server for bluehost 
-			$mail->Port = 465;                   
-			$mail->Username = $config['email_username'];  
-			$mail->Password = $config['email_password'];       
-			$mail->SetFrom($data['post']['email'], $data['post']['name']);    
+
+
+		try {
+			$mail->SMTPDebug = 2;
+			$mail->SMTPAuth = true;
+			$mail->SMTPSecure = "ssl";
+			$mail->Host = $config['email_host'];  // email must be sent from server for bluehost
+			$mail->Port = 465;
+			$mail->Username = $config['email_username'];
+			$mail->Password = $config['email_password'];
+			$mail->SetFrom($data['post']['email'], $data['post']['name']);
 			$mail->AddAddress($config['email_to']);
 			$mail->Subject = $params['site_name'] . ' Message: ' . $data['post']['subject'];
 			$mail->Body = $data['post']['message_body'];

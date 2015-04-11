@@ -65,6 +65,7 @@ a.button {
 	border-radius: 3px;
 	color: #f1f1f1;
 	padding: 4px 8px;
+	margin: 0 5px;
 	font-size: 12px;
 }
 
@@ -473,7 +474,7 @@ div#content {
 	padding: 10px 2% 30px 2%;
 	position: relative;
 	z-index: 1;
-	background: #f1f1f1;
+	background: #ffffff;
 }
 
 #page-wrapper {
