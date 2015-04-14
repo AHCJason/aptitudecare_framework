@@ -71,7 +71,7 @@ a.button {
 
 div.button {
 	position: absolute;
-	
+
 }
 
 div.button.left {
@@ -242,7 +242,7 @@ div#user-info a {
 }
 
 div#user-info a:hover {
-	
+
 }
 
 
@@ -367,87 +367,87 @@ nav ul li ul li:last-child {
 /* Grey Small Dropdown */
 
 /* General dropdown styles */
-.dropdown { 
-	position: relative; 
+.dropdown {
+	position: relative;
 	float: right;
 	top: -2px;
 	right: 15px;
-	z-index: 500; 
-	margin: 0; 
+	z-index: 500;
+	margin: 0;
 }
 
 .dropdown dl {
-	 margin-left: 0px; 
-	 position: relative; 
+	 margin-left: 0px;
+	 position: relative;
 }
 
-.dropdown dd, .dropdown dt, .dropdown ul { 
-	margin:0px; 
-	padding:0px; 
+.dropdown dd, .dropdown dt, .dropdown ul {
+	margin:0px;
+	padding:0px;
 	margin-left:0px;
 }
 
-.dropdown dd { 
+.dropdown dd {
 	position:relative;
 }
 
 /* DT styles for sliding doors */
 .dropdown dt a {
 	background: url(/aptitude-public/img/tools.png);
-    position: absolute; 
-    width:16px; 
-    height:16px; 
-    cursor: pointer; 
+    position: absolute;
+    width:16px;
+    height:16px;
+    cursor: pointer;
     margin: 0px 5px 0px 0px;
 }
 
 
 /* UL styles */
-.dropdown dd ul { 
-	background:rgba(40, 40, 40,0.75) none repeat scroll 0 0; 
-    list-style: none; 
-    padding: 3px 0; 
+.dropdown dd ul {
+	background:rgba(40, 40, 40,0.75) none repeat scroll 0 0;
+    list-style: none;
+    padding: 3px 0;
     display: none;
     position: absolute;
     margin: 20px 0 0 -50px;
-    width: auto; 
-    border: 1px solid #656565; 
-    cursor: pointer; 
-    z-index: 501; 
+    width: auto;
+    border: 1px solid #656565;
+    cursor: pointer;
+    z-index: 501;
     border-radius: 3px;
 }
 .dropdown dd ul li {
-	margin: 0; 
+	margin: 0;
 	width:224px;
 }
 
-.dropdown span.value { 
+.dropdown span.value {
 	display:none;
 }
 
-.dropdown dd ul li a { 
-	display: block; 
-	font-weight: normal; 
-	font-style: normal; 
-	width: auto; 
-	text-align:left; 
-	overflow:hidden; 
-	padding: 1px 4px 1px 19px; 
+.dropdown dd ul li a {
+	display: block;
+	font-weight: normal;
+	font-style: normal;
+	width: auto;
+	text-align:left;
+	overflow:hidden;
+	padding: 1px 4px 1px 19px;
 	margin: 2px 5px;
-	color:#ffffff; 
-	text-decoration:none; 
-	font-size: 12px; 
-	line-height: 1.5em; 
+	color:#ffffff;
+	text-decoration:none;
+	font-size: 12px;
+	line-height: 1.5em;
 }
 
-.dropdown dd ul li a:hover { 
-	background: #ffffff; 
-	color: #333; 
-	text-decoration: none; 
+.dropdown dd ul li a:hover {
+	background: #ffffff;
+	color: #333;
+	text-decoration: none;
 }
 
-.dropdown dd ul li a:visited { 
-	text-decoration:none; 
+.dropdown dd ul li a:visited {
+	text-decoration:none;
 }
 
 
@@ -670,6 +670,15 @@ input[type="submit"], input[type="button"] {
 }
 
 
+input[type="checkbox"], input[type="radio"] {
+	margin-right: 6px;
+}
+
+input[type="text"] {
+	margin-left: 10px;
+}
+
+
 
 
 /************* Pagination ********************/
@@ -781,7 +790,7 @@ div.discharge-day-wrapper {
 	margin: 0px 4px;
 	font-size: 10px;
 
-	
+
 }
 
 div.discharge-day-wrapper h3 {
@@ -798,7 +807,7 @@ div.discharge-day-wrapper h3 {
 	padding: 5px 5px 50px 5px;
 	background: #e2e2e2;
 	border-radius: 2px;
-	
+
 }
 
 

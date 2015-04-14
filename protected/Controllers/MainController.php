@@ -126,19 +126,24 @@ class MainController {
 	 */
 
 	public function loadView($folder, $name, $module = '') {
-		$this->getSiteInfo($folder, $name, $module);
-		$this->$name();
-		$this->page = strtolower($folder);
-		$this->action = strtolower($name);
-		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);
-		smarty()->assign("this", $this);
-
-		//	Make sure the session is valid and get the user info
 		if (!auth()->isLoggedIn()) {
 			if ($folder != 'login') {
 				$this->redirect(array('page' => 'login', 'action' => 'index'));
 			}
 		}
+
+		$this->page = strtolower($folder);
+		$this->action = strtolower($name);
+		$this->getSiteInfo($folder, $name, $module);
+		$this->$name();
+
+
+
+
+		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);
+		smarty()->assign("this", $this);
+
+		//	Make sure the session is valid and get the user info
 
 		// If a helper is called, load it
 		if ($this->helper != null) {
