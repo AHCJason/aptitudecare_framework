@@ -26,6 +26,7 @@ function debug($string, $array = false) {
 		echo '</pre>';
 	}
 	echo '</div>';
+	exit;
 }
 
 
@@ -208,7 +209,14 @@ function display_date($date = false) {
 	if ($date) {
 		return date('m/d/Y', strtotime($date));
 	}
-	return false;
+	return null;
+}
+
+function display_datetime($datetime = false) {
+	if ($datetime) {
+		return date("m/d/Y H:i a", strtotime($datetime));
+	}
+	return null;
 }
 
 

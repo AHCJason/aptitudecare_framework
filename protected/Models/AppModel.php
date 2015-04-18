@@ -328,13 +328,21 @@ class AppModel {
 	public function fullName() {
 		return $this->last_name . ", " . $this->first_name;
 	}
+
+	public function fullAddress() {
+		$address =  $this->address . "<br>";
+		$address .= $this->city . ", " . $this->state . " " . $this->zip . "<br>";
+		$address .= $this->phone;
+
+		return $address;
+	}
 	
 	public function tableName() {
 		return $this->prefix . "_" . $this->table;
 	}
 
 
-	public function loadTable($name = false) {
+	public function loadTable($name = false, $id = false) {
 		if ($name) {
 			if (file_exists (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php')) {
 				require_once (APP_PROTECTED_DIR . DS . 'Models' . DS . $name . '.php');
@@ -342,13 +350,29 @@ class AppModel {
 
 			if (class_exists($name)) {
 				$class = new $name;
-				return $class;
 			} else {
 				smarty()->assign('message', "Could not find the class {$name}");
 				$this->loadView('error', 'index');
 				exit;
 			}
 		}
+
+		if ($id) {
+			return $class->fetchById($id);
+		} else {
+			//  This is an empty object, get the column names
+			//	If the table is schedule then it is trying to access the admission dashboard
+			//	we won't have access to this and don't need to get the column names from that
+			//	table anyway.
+			if ($class->fetchTable() != "schedule") {
+				return $class->fetchColumnNames();
+			} else {
+				//	If the table variable isn't set in the model, then just return an empty object.
+				return $class;
+			}
+
+		}
+
 
 		return false;
 	}	

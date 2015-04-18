@@ -10,6 +10,7 @@
 	define('JS', SITE_URL . DS . 'js');
 	define('FILES', SITE_URL . DS . 'files');
 	define('FONTS', SITE_URL . DS . 'fonts');
+	define('TEMPLATES', SITE_URL . DS . 'templates');
 	define('VIEWS', APP_PROTECTED_DIR . DS . 'Views');
 
 	// Framework directories
