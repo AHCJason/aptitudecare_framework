@@ -109,6 +109,14 @@ table.form td {
 	padding: 5px 10px;
 }
 
+table.form td.section-title {
+	padding: 20px 0 0 0;
+}
+
+table.form td.title {
+	padding: 15px 0 0 0;
+}
+
 table.login td {
 	padding: 0;
 }
@@ -884,3 +892,31 @@ div.drag-hover {
 	background: #185687;
 	color: #f1f1f1;
 }
+
+
+/******** Patient note page *********/
+
+#current-files {
+	margin: 50px auto;
+	width: 75%;
+}
+
+.note-thumbnail {
+	width: auto;
+	height: 30px;
+	background: #333;
+	color: #f1f1f1;
+	border: 1px solid #000;
+	float: left;
+	margin: 10px;
+	padding: 5px;
+	text-align: center;
+}
+
+#image-viewport {
+	position: relative; 
+	overflow: hidden; 
+	margin: auto;
+	border: 1px solid;
+}
+
