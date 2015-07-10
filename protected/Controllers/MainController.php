@@ -100,7 +100,8 @@ class MainController {
 			//	If the table is schedule then it is trying to access the admission dashboard
 			//	we won't have access to this and don't need to get the column names from that
 			//	table anyway.
-			if ($class->fetchTable() != "schedule") {
+	
+			if ($class->tableName() != "_schedule") {
 				return $class->fetchColumnNames();
 			} else {
 				//	If the table variable isn't set in the model, then just return an empty object.
