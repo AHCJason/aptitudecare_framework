@@ -278,9 +278,6 @@ nav ul li {
 	display: block;
 	float: left;
 	background: #f1f1f1;
-	border-top: 1px solid #ccc;
-	border-right: 1px solid #ccc;
-	border-left: 1px solid #ccc;
 	font-size: 14px;
 	border-top-left-radius: 3px;
 	-moz-border-radius-topleft: 3px;
