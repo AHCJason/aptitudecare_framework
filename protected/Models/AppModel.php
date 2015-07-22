@@ -2,7 +2,7 @@
 
 class AppModel {
 
-	protected $prefix;
+	protected $prefix = false;
 
 	public function generate($id = null, $class = null) {
 		if ($id == null) {
@@ -338,7 +338,12 @@ class AppModel {
 	}
 	
 	public function tableName() {
-		return $this->prefix . "_" . $this->table;
+		if ($this->prefix) {
+			return $this->prefix . "_" . $this->table;
+		} else {
+			return $this->table;
+		}
+		
 	}
 
 

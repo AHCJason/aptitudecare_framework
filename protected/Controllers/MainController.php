@@ -101,7 +101,7 @@ class MainController {
 			//	we won't have access to this and don't need to get the column names from that
 			//	table anyway.
 	
-			if ($class->tableName() != "_schedule") {
+			if ($class->tableName() != "schedule") {
 				return $class->fetchColumnNames();
 			} else {
 				//	If the table variable isn't set in the model, then just return an empty object.
@@ -135,11 +135,13 @@ class MainController {
 
 		$this->page = strtolower($folder);
 		$this->action = strtolower($name);
-		$this->getSiteInfo($folder, $name, $module);
+		if ($name != "admission_logout") {
+			$this->getSiteInfo($folder, $name, $module);
+		}
+
+
+		
 		$this->$name();
-
-
-
 
 		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);
 		smarty()->assign("this", $this);
