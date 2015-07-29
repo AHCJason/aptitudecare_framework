@@ -58,7 +58,16 @@ class Session extends Singleton {
 	public function setFlash($messages = array(), $class = false) {
 		if (is_array($messages)) {
 			foreach ($messages as $k => $m) {
-				$_SESSION['messages'][$class][$k] = $m;
+				if (is_array($m)) {
+					$key = 100;
+					foreach ($m as $message) {
+						$_SESSION['messages'][$class][$key] = $message;
+						$key++;
+					}
+				} else {
+					$_SESSION['messages'][$class][$k] = $m;
+				}
+				
 			}	
 		} else {
 			$_SESSION['messages'][$class] = $messages;

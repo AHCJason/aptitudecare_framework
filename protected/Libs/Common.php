@@ -219,6 +219,22 @@ function display_datetime($datetime = false) {
 	return null;
 }
 
+function getAge($dob = false) {
+	if ($dob) {
+		$dob = explode("/", $dob);
+		$curMonth = date("m");
+		$curDay = date("j");
+		$curYear = date("Y");
+		$age = $curYear - $dob[2];
+		if ($curMonth < $dob[0] || ($curMonth == $dob[0] && $curDay < $dob[1])) {
+			$age--;
+		}
+		return $age;
+	}
+
+	return false;
+}
+
 
 
 
