@@ -107,6 +107,7 @@ table.form th {
 
 table.form td {
 	padding: 5px 10px;
+	vertical-align: top;
 }
 
 table.form td.section-title {
@@ -115,6 +116,13 @@ table.form td.section-title {
 
 table.form td.title {
 	padding: 15px 0 0 0;
+}
+
+.form ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	line-height: 1.5em;
 }
 
 table.login td {
@@ -141,6 +149,7 @@ table.view td {
 	border-bottom: 1px dotted #c6c6c6;
 	padding: 5px 15px;
 	width: auto;
+	vertical-align: top;
 }
 
 table.view th a:hover {
@@ -149,6 +158,11 @@ table.view th a:hover {
 
 table.view a:hover {
 	text-decoration: underline;
+}
+
+table.view ul {
+	margin: 0;
+	padding: 0;
 }
 
 img.add-button {
@@ -160,6 +174,7 @@ img.add-button {
 .clear { clear: both; }
 .left { float: left; }
 .right { float: right; }
+.text-left { text-align: left; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .no-margin { margin: 0; }

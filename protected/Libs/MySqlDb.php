@@ -46,7 +46,7 @@ class MySqlDb {
 	public function fetchRows($sql, $params, $class) {
 		$className = get_class($class);
 		// Get the table name for the called class	
-		$table = $class->fetchTable();
+		$table = $class->tableName();
 
 
 		$conn = $this->getConnection();
@@ -234,7 +234,7 @@ class MySqlDb {
 		} else {
 			foreach ($array as $r) {
 				if (is_object($r)) {
-					if (isset ($r->publid_id)) {
+					if (isset ($r->public_id)) {
 						if ($r->public_id == '') {
 							$r->public_id = getRandomString();
 							$this->updatePublicId($r, $tables);

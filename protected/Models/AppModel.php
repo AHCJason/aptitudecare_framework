@@ -325,6 +325,19 @@ class AppModel {
 	}
 
 
+	public function fetchByLocation($location_id) {
+		$sql = "SELECT * FROM {$this->tableName()} WHERE location_id = :location_id";
+		$params[":location_id"] = $location_id;
+		return $this->fetchAll($sql, $params);
+	}
+
+
+	public function fetchOneByLocation($location_id) {
+		$sql = "SELECT * FROM {$this->tableName()} WHERE location_id = :location_id LIMIT 1";
+		$params[":location_id"] = $location_id;
+		return $this->fetchOne($sql, $params);
+	}
+
 	public function fullName() {
 		return $this->last_name . ", " . $this->first_name;
 	}
@@ -357,7 +370,7 @@ class AppModel {
 				$class = new $name;
 			} else {
 				smarty()->assign('message', "Could not find the class {$name}");
-				$this->loadView('error', 'index');
+				//$this->loadView('error', 'index');
 				exit;
 			}
 		}
