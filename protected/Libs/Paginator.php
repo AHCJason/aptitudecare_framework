@@ -53,7 +53,7 @@ class Paginator {
 	}
 
 
-	public function fetchResults($class, $orderby = false, $pageNum = false, $loc = false, $ipp = false) {
+	public function fetchResults($class, $loc = false, $orderby = false, $pageNum = false, $ipp = false) {
 		$table = $class->tableName();
 		$params = array();
 		if ($loc) {
@@ -122,11 +122,11 @@ class Paginator {
 				}
 			} else {
 				foreach ($addStates as $key => $state) {
-					if (input()->type == 'case_managers' || input()->type == 'healthcare_facilities') {
+					if ($className == 'CaseManager' || $className == 'HealthcareFacility') {
 						$sql .= "  `ac_healthcare_facility`.`state` = :loc_state{$key} OR";
-					} elseif (input()->type == 'Physician') {
+					} elseif ($className == 'Physician') {
 						$sql .= " `ac_physician`.`state` = :loc_state{$key} OR";
-					} elseif (input()->type == 'home_health_clinicians') {
+					} elseif ($className == 'HomeHealthClinician') {
 						$sql .= "";
 					}
 					

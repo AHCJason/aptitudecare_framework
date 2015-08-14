@@ -3,6 +3,7 @@
 class Session extends Singleton {		
 	
 	public $messages;
+	public $module;
 
 
 	public function init() {
@@ -38,12 +39,19 @@ class Session extends Singleton {
 
 
 	public function getModule() {
-		if (isset ($this->default_module)) {
-			return $this->default_module;
+		if (isset ($_SESSION['current_module'])) {
+			return $_SESSION['current_module'];
 		}
 		return false;
 	}
 	
+
+	public function setModule($module = false) {
+		if ($module) {
+			$_SESSION['current_module'] = $module;
+			$this->module = $module;
+		}
+	}
 	
 	
 	

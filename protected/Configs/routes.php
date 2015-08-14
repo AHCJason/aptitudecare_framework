@@ -30,6 +30,8 @@
 		// Set module
 		$module = input()->module;
 
+		// if the user is trying to access the admission module then send the user info to the single_sign_on page
+		// this functionality will be removed after the admission application is re-built in the new framework
 		if ($module == "Admission") {
 			header("Location: " . SITE_URL . "/admission/?page=login&action=single_sign_on&user=" . input()->user);
 			exit;
@@ -130,7 +132,6 @@
 
 	}
 
-
 /*
  * -------------------------------------------
  * INSTANTIATE THE CONTROLLER CLASS
@@ -149,32 +150,30 @@
 
 	//	Next, look in the protected directory for the controller.
  	} elseif (file_exists (APP_PROTECTED_DIR . DS . 'Controllers' . DS . $page.'Controller.php')) {
-
 		include_once (APP_PROTECTED_DIR . DS . 'Controllers' . DS . $page.'Controller.php');
 	} elseif (file_exists (MODULES_DIR . DS . $module . DS . 'Controllers' . DS . $page.'Controller.php')) {
 		// Loop through the modules to look for the controller.
 		include_once(MODULES_DIR . DS . $module . DS . 'Controllers' . DS . $page.'Controller.php');
 	}
-
 	$className = $page.'Controller';
-
-
 
 	// If the class exists, instantiate it and load the coorespondig view from the Views folder. Otherwise, load the
 	// error page.
 	if (class_exists($className)) {
 		$controller = new $className;
+		$controller->page = underscoreString($page);
+		$controller->module = $module;
 
 		// Check the camelized, underscored, and action variables for the method within the class
 		if (method_exists($controller, $camelizedAction)) {
-			// $controller->$camelizedAction();
-			$controller->loadView(lcfirst($page), $camelizedAction, $module);
+			$controller->action = underscoreString($camelizedAction);
+			$controller->loadView($controller);
 		} elseif (method_exists($controller, $underscored_action)) {
-			// $controller->$underscored_action();
-			$controller->loadView(lcfirst($page), $underscored_action, $module);
+			$controller->action = $underscored_action;
+			$controller->loadView($controller);
 		} elseif (method_exists($controller, $action)) {
-			// $controller->$action();
-			$controller->loadView(lcfirst($page), $action, $module);
+			$controller->action = underscoreString($action);
+			$controller->loadView($controller);
 		} else {
 			$controller = new ErrorController();
 			// If it does not exist load the default error view

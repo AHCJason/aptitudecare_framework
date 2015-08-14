@@ -258,16 +258,6 @@ class AppModel {
 	 */
 
 	public function fetchManageData($loc = false, $orderby = false) {
-		if (isset (input()->type)) {
-			$model = ucfirst(camelizeString(depluralize(input()->type)));
-			$class = new $model;			
-		} else {
-			$className = get_called_class();
-			input()->type = $className;
-			$class = new $className;
-			
-		}
-
 		if (isset (input()->page_num)) {
 			$_pageNum = input()->page_num;
 		} else {
@@ -275,7 +265,7 @@ class AppModel {
 		}
 
 		$pagination = new Paginator();
-		$results = $pagination->fetchResults($class, $orderby, $_pageNum, $loc);
+		$results = $pagination->fetchResults($this, $loc, $orderby, $_pageNum);
 
 		if (!empty ($results)) {
 			return $results; 
