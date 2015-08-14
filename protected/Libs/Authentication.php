@@ -132,6 +132,24 @@ class Authentication extends Singleton {
 
 	}
 
+
+	public function is_dietary_admin() {
+		$user = $this->loadRecord();
+		$userGroups = $this->fetchGroups($user->id);
+		if ($user->group_id == 1 || $user->group_id == 10 || in_array(1, $userGroups) || in_array(10, $userGroups)) {
+			return true;
+		}
+		return false;
+	}
+
+
+	private function fetchGroups($user) {
+		$sql = "SELECT * FROM ac_user_group WHERE user_id = :user_id";
+		$params[":user_id"] = $user;
+		return db()->fetchRow($sql, $params, $this);
+	}
+
+
 	public function has_permission($action = false, $type = false) {
 
 		//	Only allow facility administrators to add new users

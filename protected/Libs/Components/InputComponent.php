@@ -10,7 +10,12 @@ class Input {
 		foreach ($_REQUEST as $key => $value) {
 			if (is_array($value)) {
 				foreach ($value as $k => $v) {
-					$this->$key->$k = stripslashes($v);
+					if (is_array($v)) {
+						$this->$key->$k = $v;
+					} else {
+						$this->$key->$k = stripslashes($v);
+					}
+					
 				}
 			} elseif (isset ($_POST[$key])) {
 				$this->$key = stripslashes($value);
