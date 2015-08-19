@@ -166,13 +166,13 @@
 
 		// Check the camelized, underscored, and action variables for the method within the class
 		if (method_exists($controller, $camelizedAction)) {
-			$controller->action = underscoreString($camelizedAction);
+			$controller->action = $camelizedAction;
 			$controller->loadView($controller);
 		} elseif (method_exists($controller, $underscored_action)) {
 			$controller->action = $underscored_action;
 			$controller->loadView($controller);
 		} elseif (method_exists($controller, $action)) {
-			$controller->action = underscoreString($action);
+			$controller->action = $action;
 			$controller->loadView($controller);
 		} else {
 			$controller = new ErrorController();

@@ -492,7 +492,7 @@ div#content {
 	width: 96%;
 	min-height: 100%;
 	margin-top: -10px;
-	padding: 10px 2% 30px 2%;
+	padding: 20px 2% 30px 2%;
 	position: relative;
 	z-index: 1;
 	background: #ffffff;
@@ -1012,4 +1012,8 @@ div.container input[type=checkbox] {
 	position: relative;
 	margin: 50px auto;
 	text-align: center;
+}
+
+tr.title-row {
+	font-weight: bold;
 }
