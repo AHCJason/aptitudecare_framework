@@ -131,7 +131,6 @@ class MainController {
 		// This function used to be loadView($folder, $name, $module). These have been moved in to the controller
 		// $folder = $controller->page, $name = $controller->action, $module = $controller->module
 		// need to be able to allow specific controllers and/or actions past this login block
-
 		// Make sure the user is logged in
 		if (!auth()->isLoggedIn()) {
 			// If the user is not logged in, check if public access to this page is allowed

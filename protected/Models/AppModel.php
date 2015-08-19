@@ -251,6 +251,15 @@ class AppModel {
 	}
 
 
+
+
+	public function deleteCurrent($user_id) {
+		$sql = "DELETE FROM {$this->tableName()} WHERE user_id = :user_id";
+		$params[":user_id"] = $user_id;
+		return $this->deleteQuery($sql, $params);
+	}
+
+
 	/*
 	 * -------------------------------------------------------------------------
 	 *  FETCH ALL DATA FOR MANAGE PAGE

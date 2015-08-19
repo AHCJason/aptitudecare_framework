@@ -62,10 +62,18 @@ class Authentication extends Singleton {
 	
 	
 	protected function getRecordFromSession() {
-		$sql = "select {$this->tableName()}.*, `ac_module`.`public_id` as `mod_pubid`, `ac_module`.`name` as 'module_name' from {$this->tableName()} inner join `ac_module` on `ac_module`.`id`={$this->tableName()}.`default_module` where {$this->tableName()}.`public_id`=:public_id";
+		$sql = "select u.*, m.`public_id` as `mod_pubid`, m.`name` as 'module_name' from {$this->tableName()} u inner join `ac_module` AS m on m.`id`=u.`default_module` where u.`public_id`=:public_id";
 		$params['public_id'] = session()->authentication_record;
 		$this->record = db()->fetchRow($sql, $params, $this);
-				
+	}
+
+
+
+	protected function getGroupsFromSession() {
+		$sql = "SELECT * FROM ac_permission WHERE id IN (SELECT permission_id FROM ac_group_permission WHERE group_id IN (SELECT group_id FROM ac_user_group WHERE user_id = (SELECT id FROM ac_user WHERE public_id = :public_id)))";
+		$params[":public_id"] = session()->authentication_record;
+		return db()->FetchRows($sql, $params, $this);
+
 	}
 			
 	
@@ -150,21 +158,35 @@ class Authentication extends Singleton {
 	}
 
 
-	public function has_permission($action = false, $type = false) {
+	// This functionality was replaced by the new hasPermission() function below
+	// public function has_permission($action = false, $type = false) {
 
-		//	Only allow facility administrators to add new users
-		if ($type == 'site_users') {
-			if ($this->is_admin()) {
+	// 	// Use the new GBAC to see if the user's group has permission to complete the task
+
+	// 	//	Only allow facility administrators to add new users
+	// 	if ($type == 'site_users') {
+	// 		if ($this->is_admin()) {
+	// 			return true;
+	// 		}
+	// 		return false;
+	// 	} else {
+
+	// 		//	For now we will allow access to all other page types
+	// 		return true;
+	// 	}
+	// }
+	
+
+	public function hasPermission($perm) {
+		$groups = $this->getGroupsFromSession();
+		foreach ($groups as $g) {
+			if ($g->description == $perm) {
 				return true;
 			}
-			return false;
-		} else {
+ 		}
 
-			//	For now we will allow access to all other page types
-			return true;
-		}
+ 		return false;
 	}
-	
 	
 	public function valid() {
 		if ($this->record !== false) {
