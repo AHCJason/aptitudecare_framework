@@ -144,16 +144,17 @@ class MainController {
 		
 		// Check if the user is trying to logout from the admission module
 		// this is a temporary fix and will be removed once the admission module is re-built in the new framework
-		if (isset ($controller->action) && $controller->action != "admission_logout") {
-			$this->getSiteInfo();
+		if (isset ($controller->action)) {
+			if ($controller->action != "admission_logout") {
+				$this->getSiteInfo();
+			}
+			
+			// set the title for the view. Setting it in the controller method with overwrite this
+			smarty()->assign('title', stringify($controller->action));
+			// Call the method in the controller connected with the view
+			// This connects the controller method to the view file. IMPORTANT!!!
+			$controller->{$controller->action}();						
 		}
-
-		// set the title for the view. Setting it in the controller method with overwrite this
-		smarty()->assign('title', stringify($controller->action));
-
-		// Call the method in the controller connected with the view
-		// This connects the controller method to the view file. IMPORTANT!!!
-		$controller->{$controller->action}();
 
 		// Create a variable for the current url to be used for re-direction, etc.
 		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);

@@ -177,7 +177,9 @@
 		} else {
 			$controller = new ErrorController();
 			// If it does not exist load the default error view
-			$controller->loadView('Error', 'index');
+			$controller->page = "error";
+			$controller->action = "index";
+			$controller->loadView($controller);
 		}
 
 	} else {  // If there is not a matching class redirect to the home page.
