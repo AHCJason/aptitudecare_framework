@@ -26,7 +26,7 @@
  *
  */
  
- 	set_error_handler('_exeption_handler');
+ 	//set_error_handler('_exeption_handler');
 
  	if (file_exists(SITE_DIR . DS . '.development')) {
 	 	ini_set('html_errors', 'on');

@@ -89,7 +89,9 @@ class MainController {
 			$class = new $name;
 		} else {
 			smarty()->assign('message', "Could not find the class {$name}");
-			$this->loadView('error', 'index');
+			$errorController = new ErrorController;
+			$errorController->action = "index";
+			$this->loadView($errorController);
 			exit;
 		}
 
@@ -101,7 +103,7 @@ class MainController {
 			//	If the table is schedule then it is trying to access the admission dashboard
 			//	we won't have access to this and don't need to get the column names from that
 			//	table anyway.
-	
+
 			if ($class->tableName() != "schedule") {
 				return $class->fetchColumnNames();
 			} else {
