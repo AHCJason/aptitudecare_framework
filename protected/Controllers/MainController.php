@@ -144,7 +144,7 @@ class MainController {
 		
 		// Check if the user is trying to logout from the admission module
 		// this is a temporary fix and will be removed once the admission module is re-built in the new framework
-		if ($controller->action != "admission_logout") {
+		if (isset ($controller->action) && $controller->action != "admission_logout") {
 			$this->getSiteInfo();
 		}
 
