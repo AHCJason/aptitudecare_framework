@@ -172,7 +172,7 @@ class MainController {
 		session()->checkFlashMessages();
 
 		//	If is_micro is set in the url then display a blank template
-		if (isset (input()->isMicro) && input()->isMicro == 1) {
+		if (isset (input()->isMicro) && input()->isMicro == true) {
 			$this->template = 'blank';
 		}
 
@@ -313,7 +313,7 @@ class MainController {
 		} elseif ($params) {
 			$redirect_url = $params;
 		} else {
-			$redirect_url = SITE_URL;
+			$redirect_url = SITE_URL . "/?module=" . $this->module;
 		}
 		$this->redirectTo($redirect_url);
 

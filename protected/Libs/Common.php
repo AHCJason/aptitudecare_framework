@@ -204,6 +204,13 @@ function mysql_date($date = null) {
 	return date('Y-m-d', strtotime($date));
 }
 
+function mysql_time($time = null) {
+	if ($time == null) {
+		$time = "now";
+	}
+	return date("H:i:s", strtotime($time));
+}
+
 
 function display_date($date = false) {
 	if ($date) {
