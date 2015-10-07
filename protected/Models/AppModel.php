@@ -300,8 +300,17 @@ class AppModel {
 
 
 	public function fetchColumnNames() {
-		$table = $this->prefix . "_" . $this->fetchTable();
-		$columnNames =  db()->fetchColumnNames($table);
+		if ($this->prefix != false) {
+			$table = $this->prefix . "_" . $this->fetchTable();
+		} else {
+			$table = $this->fetchTable();
+		}
+		if (isset ($this->dbname)) {
+			$dbname = $this->dbname;
+		} else {
+			$dbname = false;
+		}
+		$columnNames =  db()->fetchColumnNames($table, $dbname);
 
 		foreach ($columnNames as $n) {
 			$this->$n = null;
