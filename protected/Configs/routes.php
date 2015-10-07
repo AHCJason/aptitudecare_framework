@@ -167,19 +167,19 @@
 		// Check the camelized, underscored, and action variables for the method within the class
 		if (method_exists($controller, $camelizedAction)) {
 			$controller->action = $camelizedAction;
-			$controller->loadView($controller);
+			$controller->loadView();
 		} elseif (method_exists($controller, $underscored_action)) {
 			$controller->action = $underscored_action;
-			$controller->loadView($controller);
+			$controller->loadView();
 		} elseif (method_exists($controller, $action)) {
 			$controller->action = $action;
-			$controller->loadView($controller);
+			$controller->loadView();
 		} else {
 			$controller = new ErrorController();
 			// If it does not exist load the default error view
 			$controller->page = "error";
 			$controller->action = "index";
-			$controller->loadView($controller);
+			$controller->loadView();
 		}
 
 	} else {  // If there is not a matching class redirect to the home page.
