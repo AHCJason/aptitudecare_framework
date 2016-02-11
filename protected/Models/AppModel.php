@@ -119,22 +119,20 @@ class AppModel {
 		} 
 
 		try {
-			if ($data != false) {
+			if (isset ($this->id) && $this->id != '') {
+				db()->updateRow($this, $database);
+			} elseif (!empty ($this)) {
+				$this->id =  db()->saveRow($this, $database);
+				return $this;
+			} elseif ($data != false) {
 				if (!isset ($this->id) || $this->id != '') {
 					$this->id = db()->saveRow($data, $database);
 					return $this;
 				} else {
 					db()->updateRow($data);
-				}
-				
+				}	
 			} else {
-				if (isset ($this->id) && $this->id != '') {
-					db()->updateRow($this);
-				} else {
-					$this->id =  db()->saveRow($this, $database);
-					return $this;
-				}
-				
+				return false;	
 			}
 		} catch (PDOException $e) {
 			echo $e;

@@ -690,6 +690,10 @@ input[type="submit"], input[type="button"] {
 	cursor: pointer;
 }
 
+input[type="button"].delete {
+	background-color: #E83A4E;
+}
+
 
 input[type="checkbox"], input[type="radio"] {
 	margin-right: 6px;

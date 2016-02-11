@@ -29,11 +29,11 @@
 	if (isset(input()->module)) {
 		// Set module
 		$module = input()->module;
-
+		
 		// if the user is trying to access the admission module then send the user info to the single_sign_on page
 		// this functionality will be removed after the admission application is re-built in the new framework
 		if ($module == "Admission") {
-			header("Location: " . SITE_URL . "/admission/?page=login&action=single_sign_on&user=" . input()->user);
+			header("Location: " . SITE_URL . "/admission/?page=login&action=single_sign_on&user=" . auth()->getRecord()->public_id);
 			exit;
 		}
 
