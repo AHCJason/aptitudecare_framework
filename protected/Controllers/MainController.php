@@ -57,6 +57,18 @@ class MainController {
 	}
 
 
+	public function delete($id) {
+		$model = getModelname(input()->page);
+		$class = $this->loadModel($model);
+
+		$class->public_id = $id;
+		if ($class->delete()) {
+			return true;
+		}
+
+		return false;
+	}
+
 
 
 
@@ -70,7 +82,7 @@ class MainController {
 	 */
 
 
-	public function loadModel($name, $id = false, $module = false) {
+	protected function loadModel($name, $id = false, $module = false) {
 		if ($module) {
 			if (file_exists (MODULES_DIR . DS . $module . DS . 'Models' . DS . $name . '.php')) {
 				require_once ( MODULES_DIR . DS . $module . DS . 'Models' . DS . $name . '.php');
@@ -117,8 +129,6 @@ class MainController {
 
 
 
-
-
 	/*
 	 * -------------------------------------------------------------------------
 	 * PAGE VIEW
@@ -134,8 +144,15 @@ class MainController {
 		// $folder = $controller->page, $name = $controller->action, $module = $controller->module
 		// need to be able to allow specific controllers and/or actions past this login block
 		// Make sure the user is logged in
+
 		if (!auth()->isLoggedIn()) {
 			// If the user is not logged in, check if public access to this page is allowed
+			if (method_exists($this, 'allow_access')) {
+				if (in_array($this->action, $this->allow_access())) {
+					$this->allow_access = true;
+				}
+			}
+
 			if (!$this->allow_access) {
 				// If access is denied then re-direct to the login page
 				$this->redirect(array('page' => 'login', 'action' => 'index'));
@@ -148,12 +165,12 @@ class MainController {
 			if ($this->action != "admission_logout") {
 				$this->getSiteInfo();
 			}
-			
+
 			// set the title for the view. Setting it in the controller method with overwrite this
 			smarty()->assign('title', stringify($this->action));
 			// Call the method in the controller connected with the view
 			// This connects the controller method to the view file. IMPORTANT!!!
-			$this->{$this->action}();						
+			$this->{$this->action}();
 		}
 
 		// Create a variable for the current url to be used for re-direction, etc.
@@ -177,7 +194,13 @@ class MainController {
 		}
 
 		// set the base template
-		smarty()->display("layouts/{$this->template}.tpl");
+		if (isset (input()->pdf) && input()->pdf == true) {
+			$this->createPDF();
+		} else {
+			smarty()->display("layouts/{$this->template}.tpl");
+		}
+
+
 
 	}
 
@@ -313,7 +336,8 @@ class MainController {
 		} elseif ($params) {
 			$redirect_url = $params;
 		} else {
-			$redirect_url = SITE_URL . "/?module=" . $this->module;
+			//$redirect_url = SITE_URL . "/?module=" . $this->module;
+			$redirect_url = SITE_URL;
 		}
 		$this->redirectTo($redirect_url);
 
@@ -410,120 +434,6 @@ class MainController {
 
 
 
-
-
-	/*
-	 * -------------------------------------------------------------------------
-	 * 	DATA FUNCTIONS
-	 * -------------------------------------------------------------------------
-	 *
-	 * 	These are methods which are used universally for items in the Data tab
-	 *	instead of re-writing similar methods for each class.
-	 *
-	 */
-
-
-	// public function manage() {
-	// 	$model = depluralize(ucfirst(camelizeString(input()->page)));
-	// 	smarty()->assign('page', input()->type);
-
-	// 	if (isset (input()->type)) {
-	// 		$pageTitle = stringify(input()->type);
-	// 		$dataModel = ucfirst(camelizeString(depluralize(input()->type)));
-	// 	} else {
-	// 		$pageTitle = stringify($model);
-	// 		$dataModel = ucfirst(camelizeString(depluralize($model)));
-	// 	}
-
-	// 	if (isset (input()->location)) {
-	// 		$loc_id = input()->location;
-	// 	} else {
-	// 		//	Fetch the users default location
-	// 		$user = auth()->getRecord();
-	// 		$loc_id = $user->default_location;
-	// 	}
-	// 	$location = $this->loadModel('Location', $loc_id);
-	// 	smarty()->assign('location_id', $location->public_id);
-
-	// 	smarty()->assign('title', "Manage {$pageTitle}");
-	// 	smarty()->assign('headerTitle', $pageTitle);
-	// 	smarty()->assign('type', input()->type);
-
-	// 	if (isset (input()->orderBy)) {
-	// 		$_orderBy = input()->orderBy;
-	// 	} else {
-	// 		$_orderBy = false;
-	// 	}
-
-	// 	$class = $this->loadModel($dataModel)->fetchManageData($location, $_orderBy);
-
-	// 	$classArray[0] = array();
-	// 	if (!empty ($class)) {
-	// 		foreach ($class as $key => $value) {
-	// 			foreach ($value as $k => $v) {
-	// 				$classArray[$key][$k] = $v;
-	// 				if (!in_array($k, $value->fetchFields())) {
-	// 					unset($classArray[$key][$k]);
-	// 				}
-
-	// 			}
-
-	// 		}
-	// 	}
-
-	// 	smarty()->assign('data', $classArray);
-	// }
-
-
-	// public function add() {
-	// 	//	We are only going to allow facility administrators and better to add data
-	// 	if (!auth()->has_permission(input()->action, input()->page)) {
-	// 		$this->redirect();
-	// 	}
-
-	// 	$model = depluralize(ucfirst(camelizeString(input()->page)));
-
-	// 	smarty()->assign('title', "Add New {$model}");
-	// 	smarty()->assign('headerTitle', $model);
-	// 	smarty()->assign('page', input()->page);
-
-	// 	if (isset (input()->isMicro)) {
-	// 		$isMicro = true;
-	// 	} else {
-	// 		$isMicro = false;
-	// 	}
-	// 	smarty()->assign('isMicro', $isMicro);
-
-	// 	$class = $this->loadModel($model);
-	// 	$columns = $class->fetchColumnNames();
-	// 	$data = $this->getColumnHeaders($columns, $class);
-	// 	$additionalData = $this->getAdditionalData();
-	// 	smarty()->assign('columns', $data);
-
-	// }
-
-	// public function edit() {
-	// 	//	We are only going to allow facility administrators and better to add data
-	// 	if (!auth()->has_permission(input()->action, input()->page)) {
-	// 		$this->redirect();
-	// 	}
-
-	// 	$model = depluralize(ucfirst(camelizeString(input()->page)));
-
-
-	// 	smarty()->assign('title', "Add New {$model}");
-	// 	smarty()->assign('headerTitle', $model);
-	// 	smarty()->assign('page', input()->page);
-	// 	$data = $this->loadModel($model)->fetchById(input()->id);
-	// 	smarty()->assign('id', $data->id);
-	// 	$additionalData = $this->getAdditionalData($data);
-	// 	$dataArray = $this->getColumnHeaders($data);
-	// 	smarty()->assignByRef('dataArray', $dataArray);
-
-	// }
-
-
-
 	public function getColumnHeaders($data, $class = null) {
 		if (is_object($data)) {
 			foreach($data as $key => $column) {
@@ -541,6 +451,48 @@ class MainController {
 
 
 		return $data;
+	}
+
+
+
+	/*
+	 * -------------------------------------------------------------
+	 *  mPDF -- create PDF from HTML page
+	 * -------------------------------------------------------------
+	 *
+	 */
+
+	protected function createPDF() {
+		require_once (VENDORS_DIR . DS . 'Libraries' . DS . 'mpdf60' . DS . 'mpdf.php');
+		$url = str_replace('&pdf=true', '', SITE_URL . $_SERVER['REQUEST_URI']);
+
+		$html = file_get_contents($url);
+		$mpdf = new mPDF('urf-8', 'Letter', 0, '', 0, 0, 0, 0, 0, 0);
+		$mpdf->CSSselectMedia = 'mpdf';
+		$mpdf->setBasePath($url);
+		// get the action name
+		$action = $this->getPageAction($url);
+
+		// check if this action needs a landscape or portrait orientation
+		if (method_exists($this, "landscape_array")) {
+			if ($this->landscape_array($action)) {
+				$mpdf->AddPage('L');
+			}
+		}
+
+		$mpdf->WriteHTML($html);
+  		$mpdf->Output();
+  		exit;
+	}
+
+
+	private function getPageAction($content) {
+		$r = explode("&action=", $content);
+		if (isset ($r[1])) {
+			$r = explode("&", $r[1]);
+			return $r[0];
+		}
+		return false;
 	}
 
 

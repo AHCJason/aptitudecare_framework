@@ -196,14 +196,14 @@ class MySqlDb {
 	}
 
 
-	public function updateRow($data) {
+	public function updateRow($data, $database) {
 		$table = $data->tableName();
 		$numOfItems = count((array)$data);
 		$count = 1;
 
 		$dataSet = $this->setDataStamps($data);
 
-		$sql = "UPDATE {$table} SET ";
+		$sql = "UPDATE {$database}.{$table} SET ";
 		foreach ($dataSet as $k => $d) {
 			$params[":$k"] = $d;
 			$sql .= "{$k} = :{$k}";

@@ -110,7 +110,7 @@
         _create: function() {
             // for handling static scoping inside callbacks
             var that = this;
-
+            
             // There are 2 kinds of DOM nodes this widget can be instantiated on:
             //     1. UL, OL, or some element containing either of these.
             //     2. INPUT, in which case 'singleField' is overridden to true,

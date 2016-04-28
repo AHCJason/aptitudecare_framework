@@ -3,7 +3,6 @@
 /*
  *	Set site directories
  */
-
  	
 	define('CSS', SITE_URL . DS . 'css');
 	define('IMAGES', SITE_URL . DS . 'img');
@@ -19,7 +18,7 @@
 	define('FRAMEWORK_IMAGES', FRAMEWORK_URL . DS . 'img');
 	define('FRAMEWORK_JS', FRAMEWORK_URL . DS . 'js');
 
-	
+
 
 /*
  * Error Reporting
@@ -132,7 +131,9 @@
 		'JS' => JS,
 		'FILES' => FILES,
 		'VIEWS' => VIEWS,
-		'flashMessages' => ''
+		'flashMessages' => '',
+		'APP_PROTECTED_DIR' => APP_PROTECTED_DIR,
+		'MODULES_DIR' => MODULES_DIR
 	));
 	
 	
@@ -151,7 +152,6 @@
  	global $success_messages;
  	
  	// Instantiate classes
-	
 	
 	
 	if (! function_exists('db')) {
@@ -173,7 +173,7 @@
 	} 
 	$smarty->assignByRef('session', $session);
 
-	
+
 	$auth = Authentication::getInstance();
 	if (! function_exists('auth')) {
 		function auth() {
@@ -215,7 +215,6 @@
  * 
  */
 
- 
   
 	if (file_exists (FRAMEWORK_PROTECTED_DIR . '/Configs/routes.php')) {
 		require (FRAMEWORK_PROTECTED_DIR . '/Configs/routes.php');

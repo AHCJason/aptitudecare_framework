@@ -94,9 +94,19 @@ div.button > a:hover {
 	color: #000;
 }
 
+table.center {
+	margin: auto;
+	width: auto;
+}
+
+table.center td {
+	padding: 5px;
+}
+
 table.form {
 	width: auto;
-	max-width: 90%;
+	max-width: 800px;
+	min-width: 80%;
 	margin: 20px auto;
 }
 
@@ -688,6 +698,10 @@ input[type="submit"], input[type="button"] {
 	border: none;
 	outline: none;
 	cursor: pointer;
+}
+
+input[type="button"].delete {
+	background-color: #E83A4E;
 }
 
 
