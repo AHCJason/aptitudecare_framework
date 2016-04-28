@@ -200,8 +200,6 @@ class MainController {
 			smarty()->display("layouts/{$this->template}.tpl");
 		}
 
-
-
 	}
 
 
@@ -479,7 +477,6 @@ class MainController {
 				$mpdf->AddPage('L');
 			}
 		}
-
 		$mpdf->WriteHTML($html);
   		$mpdf->Output();
   		exit;
@@ -494,7 +491,6 @@ class MainController {
 		}
 		return false;
 	}
-
 
 
 	/*
