@@ -12,8 +12,10 @@ class MainController {
 	public $page;
 	public $action;
 	protected $template = 'main';
+	protected $current_url;
 	protected $helper = null;
 	public $allow_access = false;
+	
 
 
 	/*
@@ -69,6 +71,10 @@ class MainController {
 		return false;
 	}
 
+
+	public function getUrl() {
+		return $this->current_url;
+	}
 
 
 
@@ -165,6 +171,9 @@ class MainController {
 			if ($this->action != "admission_logout") {
 				$this->getSiteInfo();
 			}
+			// Create a variable for the current url to be used for re-direction, etc.
+			$this->current_url = SITE_URL . $_SERVER['REQUEST_URI'];
+			smarty()->assign('current_url', $this->current_url);
 
 			// set the title for the view. Setting it in the controller method with overwrite this
 			smarty()->assign('title', stringify($this->action));
@@ -173,8 +182,6 @@ class MainController {
 			$this->{$this->action}();
 		}
 
-		// Create a variable for the current url to be used for re-direction, etc.
-		smarty()->assign('current_url', SITE_URL . $_SERVER['REQUEST_URI']);
 
 		// Assign the controller to $this for access from within the view
 		smarty()->assign("this", $this);

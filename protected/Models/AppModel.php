@@ -270,7 +270,7 @@ class AppModel {
 		} else {
 			$_pageNum = false;
 		}
-
+		
 		$pagination = new Paginator();
 		$results = $pagination->fetchResults($this, $loc, $orderby, $_pageNum);
 

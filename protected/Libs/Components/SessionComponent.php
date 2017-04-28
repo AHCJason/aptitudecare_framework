@@ -4,6 +4,7 @@ class Session extends Singleton {
 	
 	public $messages;
 	public $module;
+	public $referring_page;
 
 
 	public function init() {
@@ -82,6 +83,19 @@ class Session extends Singleton {
 		}
 		$this->messages = $_SESSION['messages'];
 			
+	}
+
+	public function setReferringPage($url = null) {
+		if ($url != null) {
+			$_SESSION['referring_page'] = $url;
+		} else {
+			$_SESSION['referring_page'] = $_SERVER['HTTP_REFERER'];
+		}
+		$this->referring_page = $_SESSION['referring_page'];
+	}
+
+	public function getReferringPage() {
+		return $this->referring_page;
 	}
 		
 	public function displayData($name) {
