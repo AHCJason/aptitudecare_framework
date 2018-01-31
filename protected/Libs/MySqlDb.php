@@ -12,6 +12,7 @@ class MySqlDb {
 	public $host;
 	public $host2;
 	public $prefix;
+	public $port = 3306;
 
 	
 	public function __construct() {
@@ -20,11 +21,11 @@ class MySqlDb {
 	
 	public function conn() {
 		try {
-			$conn = new PDO("mysql:host={$this->host};dbname={$this->dbname}", $this->username, $this->password);
+			$conn = new PDO("mysql:host={$this->host};port={$this->port};dbname={$this->dbname}", $this->username, $this->password);
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-			$conn2 = new PDO("mysql:host={$this->host2};dbname={$this->dbname2}", $this->username, $this->password);
-			$conn2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			// $conn2 = new PDO("mysql:host={$this->host2};port={$this->port};dbname={$this->dbname2}", $this->username, $this->password);
+			// $conn2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $e) {
 			echo "ERROR: " . $e->getMessage();
 		}

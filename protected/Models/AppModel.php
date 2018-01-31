@@ -331,7 +331,7 @@ class AppModel {
 	}
 
 
-	public function fetchByLocation($location_id) {
+	public function fetchByLocation($location_id, $date = false) {
 		$sql = "SELECT * FROM {$this->tableName()} WHERE location_id = :location_id";
 		$params[":location_id"] = $location_id;
 		return $this->fetchAll($sql, $params);
