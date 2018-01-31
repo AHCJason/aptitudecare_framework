@@ -3,7 +3,6 @@
 /*
  *	Set site directories
  */
- 	
 	define('CSS', SITE_URL . DS . 'css');
 	define('IMAGES', SITE_URL . DS . 'img');
 	define('JS', SITE_URL . DS . 'js');
@@ -27,21 +26,21 @@
  
  	//set_error_handler('_exeption_handler');
 
- 	if (file_exists(SITE_DIR . DS . '.development')) {
+ 	if (file_exists(APP_DIR . DS . '.development')) {
 	 	ini_set('html_errors', 'on');
 	 	ini_set('display_errors', 'on');
  	} else {
 	 	ini_set('html_errors', 'off');
 	 	ini_set('display_errors', 'off');
  	}
-	
-	
+
 /*
  * -------------------------------------------
  * INCLUDE ALL REQUIRED FILES
  * -------------------------------------------
  *
  */	
+
  	
  	//require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors/Smarty-3.1.19/libs/Smarty.class.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Controllers' . DS . 'MainController.php');
@@ -53,6 +52,7 @@
  	require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Libs' . DS .'MySqlDb.php');
   	require_once(APP_PROTECTED_DIR . DS . 'Configs/config.php');  
   	require_once(APP_PROTECTED_DIR . DS . 'Configs/database.php');  	
+
   	
   	spl_autoload_register('__autoload');
  	

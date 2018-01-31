@@ -1,23 +1,23 @@
 <?php
 
 class Authentication extends Singleton {
-	
+
 	public $prefix = 'ac';
 	public $table = 'user';
 	protected $usernameField = 'email';
 	protected $passwordField = 'password';
 	protected $record = false;
-	
+
 	protected $cookie_name = "authentication_record";
-	
-		
+
+
 	/*
 	 * -------------------------------------------
 	 * 	INITIALIZE THE AUTHENTICATION CLASS
 	 * -------------------------------------------
 	 *
 	 */
-	
+
 	public function init() {
 		// Check if the users' public_id exists in the session object
 		if (!$this->valid()) {
@@ -33,21 +33,21 @@ class Authentication extends Singleton {
 
 		$this->writeToSession();
 	}
-	
-	
-	
-	
+
+
+
+
 	/*
 	 * -------------------------------------------
 	 * 	CHECK LOGIN - make sure they really are logged in...
 	 * -------------------------------------------
 	 *
 	 */
-	
+
 	public function isLoggedIn() {
 		if ($this->valid()) {
 			$record = $this->fetchUserByName($this->record->{$this->usernameField});
-			
+
 			if ($record == false) {
 				return false;
 			} else {
@@ -56,11 +56,11 @@ class Authentication extends Singleton {
 		} else {
 			return false;
 		}
-		
+
 	}
 
-	
-	
+
+
 	protected function getRecordFromSession() {
 		$sql = "select u.*, m.`public_id` as `mod_pubid`, m.`name` as 'module_name' from {$this->tableName()} u inner join `ac_module` AS m on m.`id`=u.`default_module` where u.`public_id`=:public_id";
 		$params['public_id'] = session()->authentication_record;
@@ -75,48 +75,48 @@ class Authentication extends Singleton {
 		return db()->FetchRows($sql, $params, $this);
 
 	}
-			
-	
-	
-	
+
+
+
+
 	/*
 	 * -------------------------------------------
 	 * 	GET USER - fetch info from the db by username (email address)
 	 * -------------------------------------------
 	 *
 	 */
-	
+
 	public function fetchUserByName($username) {
 		$sql = "select {$this->tableName()}.*, `ac_module`.`public_id` as `mod_pubid`, `ac_module`.`name` as 'module_name' from {$this->tableName()} inner join `ac_module` on `ac_module`.`id`={$this->tableName()}.`default_module` where {$this->tableName()}.`email`=:username ";
 		$params = array(
 			":username" => $username,
 		);
-		
+
 		$result = db()->fetchRow($sql, $params, $this);
-		
+
 		if (!empty ($result)) {
 			return $result;
-		} 
-		
+		}
+
 		return false;
 
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/*
 	 * -------------------------------------------
 	 * 	FETCH THE USER RECORD FROM THE DB
 	 * -------------------------------------------
 	 *
 	 */
-	
+
 	private function loadRecord() {
 		if ($this->valid()) {
 			$record = $this->fetchUserByName($this->record->email);
-			
+
 			if ($record == false) {
 				return false;
 			} else {
@@ -126,15 +126,15 @@ class Authentication extends Singleton {
 		} else {
 			return false;
 		}
-		
-		
+
+
 	}
 
 	public function is_admin() {
 		$user = $this->loadRecord();
 		if ($user->group_id == 1 || $user->group_id == 7 || $user->group_id == 8) {
 			return true;
-		} 
+		}
 
 		return false;
 
@@ -175,7 +175,7 @@ class Authentication extends Singleton {
 	// 		return true;
 	// 	}
 	// }
-	
+
 
 	public function hasPermission($perm) {
 		$groups = $this->getGroupsFromSession();
@@ -187,7 +187,7 @@ class Authentication extends Singleton {
 
  		return false;
 	}
-	
+
 	public function valid() {
 		if ($this->record !== false) {
 			return true;
@@ -199,39 +199,39 @@ class Authentication extends Singleton {
 	public function tableName() {
 		return $this->prefix . "_" . $this->table;
 	}
-	
-	
-	
+
+
+
 	/*
 	 * -------------------------------------------
 	 * 	WRITE DATA TO THE SESSION
 	 * -------------------------------------------
 	 *
 	 */
-		
+
 	public function writeToSession() {
 		if ($this->record !== false) {
 			$sessionVals = array(
 				$this->cookie_name => $this->record->public_id,
 				'default_module' => $this->record->module_name
-			);	
+			);
 		} else {
 			$sessionVals = array();
 		}
 
 		session()->setVals($sessionVals);
-		
+
 	}
 
-	
-	
+
+
 	/*
 	 * -------------------------------------------
 	 * 	GET THE USER RECORD
 	 * -------------------------------------------
 	 *
-	 */	
-	
+	 */
+
 	public function getRecord() {
 		return $this->record;
 	}
@@ -243,17 +243,17 @@ class Authentication extends Singleton {
 	public function getDefaultLocation() {
 		return $this->record->default_location;
 	}
-	
-	
-	
-	
+
+
+
+
 	/*
 	 * -------------------------------------------
 	 * 	GET THE FULL USERS' NAME
 	 * -------------------------------------------
 	 *
 	 */
-	
+
 	public function fullName() {
 		return $this->record->first_name . ' ' . $this->record->last_name;
 	}
@@ -270,17 +270,17 @@ class Authentication extends Singleton {
 	public function encrypt_password($password) {
 		return password_hash($password, PASSWORD_DEFAULT);
 	}
-	
-		
-	
-			
+
+
+
+
 	/*
 	 * -------------------------------------------
 	 * 	USER LOGIN
 	 * -------------------------------------------
 	 *
 	 */
-		
+
 	public function login($username, $password) {
 		$pos = strpos($password, '$2y$10$');
 		if (strpos($password, '$2y$10$') == 0) {
@@ -290,7 +290,7 @@ class Authentication extends Singleton {
 			$enc_password = $this->encrypt_password($password);
 		}
 
-		// Check database for username and password	
+		// Check database for username and password
 		$this->record = $this->fetchUserByName($username);
 		$obj = new User;
 		$user = $obj->fetchById($this->record->id);
@@ -298,7 +298,7 @@ class Authentication extends Singleton {
 		// check if returned user matches password
 		if (password_verify($password, $this->record->password)) {
 			// record datetime login
-			//$this->saveLoginTime($user->id);	
+			//$this->saveLoginTime($user->id);
 			$this->writeToSession();
 			// save login time to db
 
@@ -309,26 +309,26 @@ class Authentication extends Singleton {
 			$user->save();
 			return true;
 		}
-		
+
 		$this->record = false;
 		return false;
 	}
-	
-	
-	
-	
+
+
+
+
 	/*
 	 * -------------------------------------------
 	 * 	USER LOGOUT
 	 * -------------------------------------------
 	 *
 	 */
-	 
-	
+
+
 	public function logout() {
 		$this->record = false;
 		session_destroy();
 	}
-	
+
 
 }

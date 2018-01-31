@@ -557,45 +557,6 @@ div#copyright a:hover {
 
 
 
-/********** Login Page *****************/
-
-div#login-box {
-	width: 300px;
-	min-height: 150px;
-	position: relative;
-	height: auto;
-	color: #ffffff;
-	border: 2px solid #333;
-	border-radius: 1em;
-	-webkit-border-radius: 1em;
-	-moz-border-radius: 1em;
-	margin: 25px auto 0px auto;
-	padding: 20px 20px 20px 20px;
-	background-color: #185687;
-	/*-moz-box-shadow: 0 0 5px 5px #888;
-	-webkit-box-shadow: 0 0 5px 5px #888;*/
-	box-shadow: 25px 25px 25px 5px rgba(0,0,0,0.5);
-}
-
-div#login-box h2 {
-	color: #ffffff;
-	text-align: center;
-	margin-bottom: 5px;
-}
-
-div#login-box td {
-	color: #ffffff;
-}
-
-div#login-box input[type="text"], input[type="password"] {
-	background: #ffffff;
-	color: #333;
-	width: 200px;
-}
-
-
-
-
 /*********** Errors *********************/
 
 #flash-messages {
@@ -670,35 +631,7 @@ select {
 	background: #f2f2f2;
 }
 
-input[type=text], input[type=password] {
-	line-height: 18px;
-	background: #fff;
-	border: 1px solid #c8c8c8;
-	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-	font-size: 14px;
-	padding: 2px 4px;
-}
 
-input[type=submit] {
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	background-color: #666;
-	color: #f1f1f1;
-}
-
-
-input[type="submit"], input[type="button"] {
-	padding: 5px 8px;
-	color: #fff;
-	text-decoration: none;
-	background: #929292;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	border: none;
-	outline: none;
-	cursor: pointer;
-}
 
 input[type="button"].delete {
 	background-color: #E83A4E;
@@ -941,8 +874,8 @@ div.drag-hover {
 }
 
 #image-viewport {
-	position: relative; 
-	overflow: hidden; 
+	position: relative;
+	overflow: hidden;
 	margin: auto;
 	border: 1px solid;
 }
@@ -955,7 +888,7 @@ div.drag-hover {
 }
 
 /* clearfix */
-.container:before, 
+.container:before,
 .container:after {
 	content: "";
 	display: table;
