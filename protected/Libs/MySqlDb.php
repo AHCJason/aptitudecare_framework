@@ -2,21 +2,16 @@
 
 class MySqlDb {
 
-	private $db;
-	public $username;
-	public $username2;
-	public $password;
-	public $password2;
-	public $dbname;
-	public $dbname2;
-	public $host;
-	public $host2;
 	public $prefix;
-	public $port = 3306;
 
+	private $db;
+	public $host;
+	public $dbname;
+	public $username;	
+	public $password;
+	public $port = 3306;
 	
 	public function __construct() {
-		
 	}
 	
 	public function conn() {
@@ -24,20 +19,16 @@ class MySqlDb {
 			$conn = new PDO("mysql:host={$this->host};port={$this->port};dbname={$this->dbname}", $this->username, $this->password);
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-			// $conn2 = new PDO("mysql:host={$this->host2};port={$this->port};dbname={$this->dbname2}", $this->username, $this->password);
-			// $conn2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $e) {
 			echo "ERROR: " . $e->getMessage();
 		}
 		
 		$this->db = $conn;
-		
 	}
 	
 	public function getConnection() {
-		return $this->db;
+		return $this->db;		
 	}
-
 
 	/*
 	 * Write database query functions to be used site-wide
@@ -48,7 +39,6 @@ class MySqlDb {
 		$className = get_class($class);
 		// Get the table name for the called class	
 		$table = $class->tableName();
-
 
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);

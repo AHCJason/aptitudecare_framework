@@ -53,7 +53,6 @@
   	require_once(APP_PROTECTED_DIR . DS . 'Configs/config.php');  
   	require_once(APP_PROTECTED_DIR . DS . 'Configs/database.php');  	
 
-  	
   	spl_autoload_register('__autoload');
  	
  	function __autoload($className) {
@@ -133,7 +132,8 @@
 		'VIEWS' => VIEWS,
 		'flashMessages' => '',
 		'APP_PROTECTED_DIR' => APP_PROTECTED_DIR,
-		'MODULES_DIR' => MODULES_DIR
+		'MODULES_DIR' => MODULES_DIR,
+		'S3_BUCKET' => S3_BUCKET
 	));
 	
 	
@@ -161,6 +161,13 @@
 		}
 	}
 
+	if (!function_exists('db2')) {
+		function db2() {
+			global $db2;
+			return $db2;
+		}
+	}
+	
 	session_start();
 	$session = Session::getInstance();
 
