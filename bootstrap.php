@@ -51,7 +51,8 @@
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Authentication.php');
  	require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Libs' . DS .'MySqlDb.php');
   	require_once(APP_PROTECTED_DIR . DS . 'Configs/config.php');  
-  	require_once(APP_PROTECTED_DIR . DS . 'Configs/database.php');  	
+  	require_once(APP_PROTECTED_DIR . DS . 'Configs/database.php'); 
+  	require_once(APP_PROTECTED_DIR . DS . 'Configs/s3Connect.php');
 
   	spl_autoload_register('__autoload');
  	
@@ -101,8 +102,6 @@
 		
  	}
 
-	
-	
 		
 /*
  * -------------------------------------------
