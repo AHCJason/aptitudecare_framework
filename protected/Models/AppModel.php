@@ -49,7 +49,8 @@ class AppModel {
 		}
 	}
 	
-	public function fetchAll($sql = null, $params = array()) {
+
+	public function fetchAll($sql = null, $params = array(), $db = false) { // if the $db = true then it will query the admission db
 		
 		$called_class = get_called_class();
 		$class = new $called_class;
@@ -67,8 +68,12 @@ class AppModel {
 			}
 
 		}
-		
+
 		try {
+			if ($db) {
+				return db2()->fetchRows($sql, $params, $class);
+			}
+
 			return db()->fetchRows($sql, $params, $class);
 		} catch (PDOException $e) {
 			echo $e;
@@ -331,7 +336,7 @@ class AppModel {
 	}
 
 
-	public function fetchByLocation($location_id) {
+	public function fetchByLocation($location_id, $date = false) {
 		$sql = "SELECT * FROM {$this->tableName()} WHERE location_id = :location_id";
 		$params[":location_id"] = $location_id;
 		return $this->fetchAll($sql, $params);

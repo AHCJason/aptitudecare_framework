@@ -3,7 +3,6 @@
 /*
  *	Set site directories
  */
- 	
 	define('CSS', SITE_URL . DS . 'css');
 	define('IMAGES', SITE_URL . DS . 'img');
 	define('JS', SITE_URL . DS . 'js');
@@ -25,21 +24,21 @@
  
  	//set_error_handler('_exeption_handler');
 
- 	if (file_exists(SITE_DIR . DS . '.development')) {
+ 	if (file_exists(APP_DIR . DS . '.development')) {
 	 	ini_set('html_errors', 'on');
 	 	ini_set('display_errors', 'on');
  	} else {
 	 	ini_set('html_errors', 'off');
 	 	ini_set('display_errors', 'off');
  	}
-	
-	
+
 /*
  * -------------------------------------------
  * INCLUDE ALL REQUIRED FILES
  * -------------------------------------------
  *
  */	
+
  	
  	//require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors/Smarty-3.1.19/libs/Smarty.class.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Controllers' . DS . 'MainController.php');
@@ -50,8 +49,9 @@
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Authentication.php');
  	require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Libs' . DS .'MySqlDb.php');
   	require_once(APP_PROTECTED_DIR . DS . 'Configs/config.php');  
-  	require_once(APP_PROTECTED_DIR . DS . 'Configs/database.php');  	
-  	
+  	require_once(APP_PROTECTED_DIR . DS . 'Configs/database.php'); 
+  	require_once(APP_PROTECTED_DIR . DS . 'Configs/s3Connect.php');
+
   	spl_autoload_register('__autoload');
  	
  	function __autoload($className) {
@@ -100,8 +100,6 @@
 		
  	}
 
-	
-	
 		
 /*
  * -------------------------------------------
@@ -131,7 +129,8 @@
 		'VIEWS' => VIEWS,
 		'flashMessages' => '',
 		'APP_PROTECTED_DIR' => APP_PROTECTED_DIR,
-		'MODULES_DIR' => MODULES_DIR
+		'MODULES_DIR' => MODULES_DIR,
+		'S3_BUCKET' => S3_BUCKET
 	));
 	
 	
@@ -159,6 +158,13 @@
 		}
 	}
 
+	if (!function_exists('db2')) {
+		function db2() {
+			global $db2;
+			return $db2;
+		}
+	}
+	
 	session_start();
 	$session = Session::getInstance();
 
