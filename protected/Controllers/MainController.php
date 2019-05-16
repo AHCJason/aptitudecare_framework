@@ -15,7 +15,7 @@ class MainController {
 	protected $current_url;
 	protected $helper = null;
 	public $allow_access = false;
-	
+
 
 
 	/*
@@ -150,7 +150,6 @@ class MainController {
 		// $folder = $controller->page, $name = $controller->action, $module = $controller->module
 		// need to be able to allow specific controllers and/or actions past this login block
 		// Make sure the user is logged in
-
 		if (!auth()->isLoggedIn()) {
 			// If the user is not logged in, check if public access to this page is allowed
 			if (method_exists($this, 'allow_access')) {

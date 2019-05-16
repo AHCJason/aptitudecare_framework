@@ -18,8 +18,6 @@
 	define('FRAMEWORK_IMAGES', FRAMEWORK_URL . DS . 'img');
 	define('FRAMEWORK_JS', FRAMEWORK_URL . DS . 'js');
 
-
-
 /*
  * Error Reporting
  *

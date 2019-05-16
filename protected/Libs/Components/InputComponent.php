@@ -5,12 +5,19 @@ class Input {
 	public $input = array();
 	public $_post = array();
 	public $_get = array();	
+	public $page = null;
+	public $action = null;
+	public $item = null;
+	public $object = null;
+	public $colName = null;
+	public $value = null;
+
 
 	public function __construct() {
 		foreach ($_REQUEST as $key => $value) {
 			if (is_array($value)) {
 				foreach ($value as $k => $v) {
-					if (is_array($v)) {
+					if (is_array($v) && !empty($v)) {
 						$this->$key->$k = $v;
 					} else {
 						$this->$key->$k = stripslashes($v);

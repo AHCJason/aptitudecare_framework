@@ -10,7 +10,7 @@ var loadFailCount = 0;
 var errorStatus = 0;
 	
  $(document).ready(function() {
-	loadPage();  //Load the menu on the page load
+	//loadPage();  //Load the menu on the page load
 	
 	$panels = $('#transitionDiv').children('.rotatingPage');
 	panelCount = $panels.length - 1;
@@ -34,7 +34,13 @@ function loadPage()
 		window.location = location.href;
 		loadNumber = 0;
 	} else {
-		$(document).load('/', postLoad);
+		var whatToLoad = window.location.href;
+        if(!whatToLoad.indexOf("headless") >= 0)
+            if(whatToLoad.indexOf("?") >= 0)
+                whatToLoad = whatToLoad.concat("&headless=true");
+            else
+                whatToLoad = whatToLoad.concat("?headless=true");
+		$(document.body).load(whatToLoad, postLoad);
 	}
 	
 }
