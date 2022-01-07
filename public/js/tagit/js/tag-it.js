@@ -132,8 +132,14 @@
                 this.tagInput.attr('tabindex', this.options.tabIndex);
             }
 
+			console.log(this.options);
+			console.log(JSON.stringify(this.options)).
+			
+			this.tagInput.attr('maxLength', 4);
+			
             if (this.options.placeholderText) {
-                this.tagInput.attr('placeholder', this.options.placeholderText);
+                this.tagInput.prop('placeholder', this.options.placeholderText);
+				console.log("added tag");
             }
 
             if (!this.options.autocomplete.source) {
