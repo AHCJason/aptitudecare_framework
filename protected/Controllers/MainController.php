@@ -200,7 +200,19 @@ class MainController {
 		}
 
 		// set the base template
-		if (isset (input()->pdf) && input()->pdf == true) {
+		//Use new PDF for dietary only, or if manually specified to use pdf2.
+		if(((isset (input()->pdf2) && input()->pdf2 == true) || (isset (input()->pdf) && input()->pdf == true && $this->module == "NO WORKYDietary" && !isset(input()->forceOld))) && !isset(input()->forceNoPDF)) {
+			if($this->template == "pdf")
+			{
+				$this->template = "pdf2";
+			}
+			if(!isset($this->pdfName))
+			{
+				$this->pdfName = "download.pdf";
+			}
+			$this->createPDF_webkit($this->pdfName);
+		}
+		else if (isset (input()->pdf) && input()->pdf == true && !isset(input()->forceNoPDF)) {
 			$this->createPDF();
 		} else {
 			smarty()->display("layouts/{$this->template}.tpl");
@@ -488,6 +500,66 @@ class MainController {
   		exit;
 	}
 
+	//for this to work wkhtmltopdf has to be in the run path
+	protected function createPDF_webkit($filename = 'download.pdf')
+	{
+		$orient = "Portrait";
+		$margin = "";
+		
+		//$this->template = 'pdf2';
+		
+		// check if this action needs a landscape or portrait orientation
+		if (isset($this->landscape_array)) {
+			$orient = "Landscape";
+		}
+		
+		if(isset($this->otherPDFWebkit))
+		{
+			$orient .= " " . $this->otherPDFWebkit;
+		}
+		
+		if (isset($this->margins)) {
+			$margin = " -L {$this->margins} -R {$this->margins}";
+		}
+		
+		smarty()->assign("this", $this);
+		
+		// Get the HTML to convert to a PDF
+		// (using Smarty - replace this if you want)
+		global $smarty;
+		//$smarty->assign($vars);
+		$html = $smarty->fetch("layouts/{$this->template}.tpl");
+		// Run wkhtmltopdf
+		$descriptorspec = array(
+			0 => array('pipe', 'r'), // stdin
+			1 => array('pipe', 'w'), // stdout
+			2 => array('pipe', 'w'), // stderr
+		);
+		$process = proc_open('wkhtmltopdf'. $margin .' --page-size Letter --orientation '. $orient. ' --print-media-type -q - -', $descriptorspec, $pipes);
+		// Send the HTML on stdin
+		fwrite($pipes[0], $html);
+		fclose($pipes[0]);
+		// Read the outputs
+		$pdf = stream_get_contents($pipes[1]);
+		$errors = stream_get_contents($pipes[2]);
+		// Close the process
+		fclose($pipes[1]);
+		$return_value = proc_close($process);
+		// Output the results
+		if ($errors) {
+			throw new Exception('PDF generation failed: ' . $errors);
+		} else {
+			header('Content-Type: application/pdf');
+			header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
+			header('Pragma: public');
+			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+			header('Last-Modified: ' . gmdate('D, d M Y H:i:s').' GMT');
+			header('Content-Length: ' . strlen($pdf));
+			header('Content-Disposition: inline; filename="' . $filename . '";');
+			echo $pdf;
+			exit();
+		}
+	}
 
 	private function getPageAction($content) {
 		$r = explode("&action=", $content);
