@@ -2,7 +2,7 @@
 
 class Calendar {
 
-	public function getWeek($date = null) {
+	public static function getWeek($date = null) {
 		if ($date == null) {
 			$date = date('Y-m-d');
 		}

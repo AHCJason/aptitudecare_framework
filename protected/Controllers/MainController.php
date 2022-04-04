@@ -479,11 +479,37 @@ class MainController {
 	 */
 
 	protected function createPDF() {
-		require_once (VENDORS_DIR . DS . 'Libraries' . DS . 'mpdf60' . DS . 'mpdf.php');
+		//already loaded with composer
+		#require_once (VENDORS_DIR . DS . 'Libraries' . DS . 'mpdf60' . DS . 'mpdf.php');
 		$url = str_replace('&pdf=true', '', SITE_URL . $_SERVER['REQUEST_URI']);
 
-		$html = file_get_contents($url);
-		$mpdf = new mPDF('urf-8', 'Letter', 0, '', 0, 0, 0, 0, 0, 0);
+//testing for DEV todo change me
+/*		$arrContextOptions=array(
+			"ssl"=>array(
+				"verify_peer"=>false,
+				"verify_peer_name"=>false,
+			),
+		);  
+*/
+		//$html = file_get_contents($url, false, stream_context_create($arrContextOptions));
+		global $smarty;
+		$html = $smarty->fetch("layouts/{$this->template}.tpl");
+		$mpdf = new \Mpdf\Mpdf([
+		#'utf-8', 'Letter', 0, '', 0, 0, 0, 0, 0, 0
+			'tempDir' => '/tmp/',
+			'mode' => 'utf-8',
+			'format' => 'Letter',
+			'default_font_size' => 0,
+			'default_font' => '',
+			'margin_left' => 0,
+			'margin_right' => 0,
+			'margin_top' => 0,
+			'margin_bottom ' => 0,
+			'margin_header' => 0,
+			'margin_footer ' => 0,
+			'orientation' => 'P',
+		]);
+		$mpdf->curlAllowUnsafeSslRequests = true;
 		$mpdf->CSSselectMedia = 'mpdf';
 		$mpdf->setBasePath($url);
 		// get the action name

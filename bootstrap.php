@@ -3,6 +3,7 @@
 /*
  *	Set site directories
  */
+ 	
 	define('CSS', SITE_URL . DS . 'css');
 	define('IMAGES', SITE_URL . DS . 'img');
 	define('JS', SITE_URL . DS . 'js');
@@ -17,6 +18,8 @@
 	define('FRAMEWORK_IMAGES', FRAMEWORK_URL . DS . 'img');
 	define('FRAMEWORK_JS', FRAMEWORK_URL . DS . 'js');
 
+
+
 /*
  * Error Reporting
  *
@@ -24,26 +27,27 @@
  
  	//set_error_handler('_exeption_handler');
 
- 	if (file_exists(APP_DIR . DS . '.development')) {
+ 	if (file_exists(SITE_DIR . DS . '.development')) {
 	 	ini_set('html_errors', 'on');
 	 	ini_set('display_errors', 'on');
  	} else {
 	 	ini_set('html_errors', 'off');
 	 	ini_set('display_errors', 'off');
  	}
-
+	
+	
 /*
  * -------------------------------------------
  * INCLUDE ALL REQUIRED FILES
  * -------------------------------------------
  *
  */	
-
  	
  	//require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors/Smarty-3.1.19/libs/Smarty.class.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Controllers' . DS . 'MainController.php');
- 	require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors' . DS . 'Smarty-3.1.19' . DS . 'libs' . DS . 'Smarty.class.php');
- 	require_once (FRAMEWORK_PROTECTED_DIR . DS . 'Vendors' . DS . 'PHPMailer' . DS . 'PHPMailerAutoload.php');
+ 	#require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Vendors' . DS . 'Smarty-3.1.19' . DS . 'libs' . DS . 'Smarty.class.php');
+ 	#require_once (FRAMEWORK_PROTECTED_DIR . DS . 'Vendors' . DS . 'PHPMailer' . DS . 'PHPMailerAutoload.php');
+	require_once SHARED_COMPOSER_LIB . '/autoload.php';
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Singleton.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Common.php');
  	require(FRAMEWORK_PROTECTED_DIR . DS . 'Libs/Authentication.php');
@@ -54,7 +58,7 @@
 
   	spl_autoload_register('__autoload');
  	
- 	function __autoload($className) {
+ 	function __autoload2($className) {
 	 	// list of directories to scan
 		$dirs = array(
 			FRAMEWORK_PROTECTED_DIR . DS . 'Controllers',
@@ -100,6 +104,8 @@
 		
  	}
 
+	
+	
 		
 /*
  * -------------------------------------------
@@ -164,7 +170,7 @@
 			return $db2;
 		}
 	}
-	
+
 	session_start();
 	$session = Session::getInstance();
 

@@ -5,22 +5,28 @@ class Input {
 	public $input = array();
 	public $_post = array();
 	public $_get = array();	
-	public $page = null;
-	public $action = null;
-	public $item = null;
-	public $object = null;
-	public $colName = null;
-	public $value = null;
+	
+	private function stripslashes_deep($value)
+	{
+		$value = is_array($value) ?
+					array_map('stripslashes_deep', $value) :
+					stripslashes($value);
 
+		return $value;
+	}
 
 	public function __construct() {
+		//$_REQUEST = $this->stripslashes_deep($_REQUEST);
+		
 		foreach ($_REQUEST as $key => $value) {
 			if (is_array($value)) {
 				foreach ($value as $k => $v) {
-					if (is_array($v) && !empty($v)) {
+					if (is_array($v)) {
 						$this->$key->$k = $v;
 					} else {
-						$this->$key->$k = stripslashes($v);
+						var_dump($this->$key-$k);
+						@$this->$key->$k = @stripslashes(@$v);
+						//$_REQUEST[$key][$k] = stripslashes($v);
 					}
 					
 				}
@@ -30,6 +36,7 @@ class Input {
 				$this->$key = stripslashes($value);
 			}
 		}
+		
 
 	}
 	

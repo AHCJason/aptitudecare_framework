@@ -2,33 +2,41 @@
 
 class MySqlDb {
 
+	private $db;
+	public $username;
+	public $username2;
+	public $password;
+	public $password2;
+	public $dbname;
+	public $dbname2;
+	public $host;
+	public $host2;
 	public $prefix;
 
-	private $db;
-	public $host;
-	public $dbname;
-	public $username;	
-	public $password;
-	public $port = 3306;
 	
 	public function __construct() {
+		
 	}
 	
 	public function conn() {
 		try {
-			$conn = new PDO("mysql:host={$this->host};port={$this->port};dbname={$this->dbname}", $this->username, $this->password);
+			$conn = new PDO("mysql:host={$this->host};dbname={$this->dbname}", $this->username, $this->password);
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+			$conn2 = new PDO("mysql:host={$this->host2};dbname={$this->dbname2}", $this->username, $this->password);
+			$conn2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (PDOException $e) {
 			echo "ERROR: " . $e->getMessage();
 		}
 		
 		$this->db = $conn;
+		
 	}
 	
 	public function getConnection() {
-		return $this->db;		
+		return $this->db;
 	}
+
 
 	/*
 	 * Write database query functions to be used site-wide
@@ -39,6 +47,7 @@ class MySqlDb {
 		$className = get_class($class);
 		// Get the table name for the called class	
 		$table = $class->tableName();
+
 
 		$conn = $this->getConnection();
 		$stmt = $conn->prepare($sql);
@@ -284,36 +293,36 @@ class MySqlDb {
 
 	public function setDataStamps($data) {
 		//	Check for public id
-		
+		//die("<pre>".print_r($data, true));
 
-		if (array_key_exists('public_id', $data)) {
+		if (isset($data->public_id)) {
 			if ($data->public_id == '') {
 				$data->public_id = getRandomString();
 			}
 		} 
 		
-		if (array_key_exists ('datetime_created', $data)) {
+		if (isset($data->datetime_created)) {
 			if ($data->datetime_created == null || $data->datetime_created == '0000-00-00 00:00:00') {
 				$data->datetime_created = mysql_datetime();
 			}
 		} 
 		
-		if (array_key_exists ('datetime_modified', $data)) {
+		if (isset($data->datetime_modified)) {
 			$data->datetime_modified = mysql_datetime();
 		}	
 
-		if (array_key_exists('datetime_last_login', $data)) {
+		if (isset($data->datetime_last_login)) {
 			$data->datetime_last_login = mysql_datetime();
 		}			
 
 		//	Get user data from the session
 		$user = auth()->getRecord();
 
-		if (array_key_exists('user_created', $data) && ($data->user_created == '' || $data->user_created == 0)) {
+		if (isset($data->user_created) && ($data->user_created == '' || $data->user_created == 0)) {
 			$data->user_created = $user->id;
 		}
 
-		if (array_key_exists('user_modified', $data)) {
+		if (isset($data->user_modified)) {
 			$data->user_modified = $user->id;
 		}
 

@@ -22,7 +22,7 @@ class AppModel {
 	}
 	
 	
-	public function fetchOne($sql, $params = array(), $class = null) {
+	public static function fetchOne($sql, $params = array(), $class = null) {
 		if ($class != null) {
 			$called_class = $class;
 		} else {
