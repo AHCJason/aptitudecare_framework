@@ -54,9 +54,9 @@
  	require_once(FRAMEWORK_PROTECTED_DIR . DS . 'Libs' . DS .'MySqlDb.php');
   	require_once(APP_PROTECTED_DIR . DS . 'Configs/config.php');  
   	require_once(APP_PROTECTED_DIR . DS . 'Configs/database.php'); 
-  	require_once(APP_PROTECTED_DIR . DS . 'Configs/s3Connect.php');
+#  	require_once(APP_PROTECTED_DIR . DS . 'Configs/s3Connect.php');
 
-  	spl_autoload_register('__autoload');
+	spl_autoload_register('__autoload2');
  	
  	function __autoload2($className) {
 	 	// list of directories to scan
@@ -135,8 +135,8 @@
 		'VIEWS' => VIEWS,
 		'flashMessages' => '',
 		'APP_PROTECTED_DIR' => APP_PROTECTED_DIR,
-		'MODULES_DIR' => MODULES_DIR,
-		'S3_BUCKET' => S3_BUCKET
+		'MODULES_DIR' => MODULES_DIR#,
+#		'S3_BUCKET' => S3_BUCKET
 	));
 	
 	
