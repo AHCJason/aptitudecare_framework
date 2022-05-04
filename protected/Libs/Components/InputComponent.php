@@ -18,15 +18,18 @@ class Input {
 	public function __construct() {
 		//$_REQUEST = $this->stripslashes_deep($_REQUEST);
 		
-		foreach ($_REQUEST as $key => $value) {
+		foreach ($_REQUEST as $key => $value) {	
 			if (is_array($value)) {
 				foreach ($value as $k => $v) {
 					if (is_array($v)) {
 						$this->$key->$k = $v;
 					} else {
-						var_dump($this->$key-$k);
-						@$this->$key->$k = @stripslashes(@$v);
-						//$_REQUEST[$key][$k] = stripslashes($v);
+						#since php 5.4 object creation is not implicit.
+						if(!isset($this->{$key}))
+						{
+							$this->{$key} = new stdClass();
+						}
+						@$this->{$key}->{$k} = @stripslashes(@$v);
 					}
 					
 				}
