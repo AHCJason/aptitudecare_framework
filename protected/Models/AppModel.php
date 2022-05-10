@@ -31,14 +31,22 @@ class AppModel {
 		$class = new $called_class;
 
 		if ($sql == null) {
-			$sql = "SELECT * FROM `{$this->tableName()}`";
+			#echo "Table Name!";
+			#var_dump($class->tableName());
+			#var_dump($called_class);
+			#die();
+			$sql = "SELECT * FROM `{$class->tableName()}`";
 			if (!empty($params)) {
 				foreach ($params as $k => $p) {
-					$sql .= " WHERE {$k} = {$p} AND";
+					#We still want the paramater binding to work so {p} to :{$k
+					$sql .= " WHERE {$k} = :{$k} AND";
 				}
 
 				$sql = trim($sql, "AND");
 			}
+			#var_dump($sql);
+			#print_r($params);
+			#die();
 
 		}
 
@@ -61,11 +69,15 @@ class AppModel {
 			$sql = "SELECT * FROM `{$table}`";
 			if (!empty($params)) {
 				foreach ($params as $k => $p) {
-					$sql .= " WHERE {$k} = {$p} AND";
+					#We still want the paramater binding to work so {p} to :{$k}
+					$sql .= " WHERE {$k} = :{$k} AND";
 				}
 
 				$sql = trim($sql, "AND");
 			}
+			var_dump($sql);
+			print_r($params);
+			die();
 
 		}
 
