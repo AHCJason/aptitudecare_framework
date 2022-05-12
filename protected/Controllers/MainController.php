@@ -561,7 +561,7 @@ class MainController {
 			1 => array('pipe', 'w'), // stdout
 			2 => array('pipe', 'w'), // stderr
 		);
-		$process = proc_open('wkhtmltopdf'. $margin .' --page-size Letter --orientation '. $orient. ' --print-media-type -q - -', $descriptorspec, $pipes);
+		$process = proc_open('wkhtmltopdf'. $margin .' --page-size Letter --cookie "VouchCookie" "'. $_COOKIE['VouchCookie'].'" --orientation '. $orient. ' --print-media-type -q - -', $descriptorspec, $pipes);
 		// Send the HTML on stdin
 		fwrite($pipes[0], $html);
 		fclose($pipes[0]);
