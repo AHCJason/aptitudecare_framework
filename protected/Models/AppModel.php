@@ -75,9 +75,9 @@ class AppModel {
 
 				$sql = trim($sql, "AND");
 			}
-			var_dump($sql);
-			print_r($params);
-			die();
+			//var_dump($sql);
+			//print_r($params);
+			//die();
 
 		}
 
