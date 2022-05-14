@@ -42,7 +42,7 @@ class Authentication extends Singleton {
 	 * -------------------------------------------
 	 * 	CHECK LOGIN - make sure they really are logged in...
 	 * -------------------------------------------
-	 *
+	 *  For some reason take the record, load user name, and go refresh record in memory.
 	 */
 	
 	public function isLoggedIn() {
@@ -137,14 +137,15 @@ class Authentication extends Singleton {
 		return $this->vc;
 	}
 	
-	
+	//take session user public_id and go get user record from DB
 	protected function getRecordFromSession() {
 		$sql = "select u.*, m.`public_id` as `mod_pubid`, m.`name` as 'module_name' from {$this->tableName()} u inner join `ac_module` AS m on m.`id`=u.`default_module` where u.`public_id`=:public_id";
 		$params['public_id'] = session()->authentication_record;
 		$this->record = db()->fetchRow($sql, $params, $this);
 	}
 
-
+	//take session public_id and go get permissions for groups from VouchCookie
+	//take session public_id and go get permissions for groups from DB if local auth
 	protected function getGroupsFromSession() {
 		if(isset($_COOKIE['VouchCookie']))
 		{
@@ -196,6 +197,7 @@ class Authentication extends Singleton {
 		
 		if (!empty ($result)) {
 			//overwrite DB with default module from vouch
+			//todo add check if in vouch mode then do.
 			$result->module_name = $this->VouchCookie()->default_module;
 			return $result;
 		} 
@@ -233,6 +235,8 @@ class Authentication extends Singleton {
 	}
 
 	public function is_admin() {
+		//bypass this function, we use Vouch now.
+		return false;
 		$user = $this->loadRecord();
 		if ($user->group_id == 1 || $user->group_id == 7 || $user->group_id == 8) {
 			return true;
@@ -244,6 +248,7 @@ class Authentication extends Singleton {
 
 
 	public function is_dietary_admin() {
+		return false;
 		$user = $this->loadRecord();
 		$userGroups = $this->fetchGroups($user->id);
 		if ($user->group_id == 1 || $user->group_id == 10 || in_array(1, $userGroups) || in_array(10, $userGroups)) {
@@ -252,13 +257,13 @@ class Authentication extends Singleton {
 		return false;
 	}
 
-
+/* //pretty sure only is_dietary_admin() uses this.
 	private function fetchGroups($user) {
 		$sql = "SELECT * FROM ac_user_group WHERE user_id = :user_id";
 		$params[":user_id"] = $user;
 		return db()->fetchRow($sql, $params, $this);
 	}
-
+*/
 
 	// This functionality was replaced by the new hasPermission() function below
 	// public function has_permission($action = false, $type = false) {
@@ -335,6 +340,9 @@ class Authentication extends Singleton {
 	 */	
 	
 	public function getRecord() {
+		//todo add check if in vouch mode then do.
+		if(isset($this->record->module_name))
+			$this->record->module_name = $this->VouchCookie()->default_module;
 		return $this->record;
 	}
 
@@ -343,7 +351,9 @@ class Authentication extends Singleton {
 	}
 
 	public function getDefaultLocation() {
-		return $this->record->default_location;
+		//todo add check if in vouch mode then do.
+		return $this->VouchCookie()->default_module;		
+		//return $this->record->default_location;
 	}
 	
 	
