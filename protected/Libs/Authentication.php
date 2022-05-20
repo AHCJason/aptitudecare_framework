@@ -43,9 +43,11 @@ class Authentication extends Singleton {
 	 * 	CHECK LOGIN - make sure they really are logged in...
 	 * -------------------------------------------
 	 *  For some reason take the record, load user name, and go refresh record in memory.
+	 *  Shoe horn the SSO check in this as every page calls it to see if logged in.
 	 */
 	
-	public function isLoggedIn() {
+	public function isLoggedIn(MainController &$superObject = null) {
+		#echo ("isloggedin");
 		if ($this->valid()) {
 			$record = $this->fetchUserByName($this->record->{$this->usernameField});
 			
@@ -55,7 +57,92 @@ class Authentication extends Singleton {
 				return true;
 			}
 		} else {
-			return false;
+			//return false;
+
+			//if we aren't logged in, let's check the SSO state.
+			if(isset($_COOKIE['VouchCookie']))
+			{
+				//echo "Vouch Cookie Mode\n";
+				$vc = $this->VouchCookie();
+				if($vc->status == 200){
+					$this->record = $this->fetchUserByName($vc->login);
+
+					//we have failed to find the email address. so now we get to create the user....
+					if($this->record == false && $superObject != null){
+						//$trace = debug_backtrace();
+      					//$trace[1]->object->doSomething();
+
+						//var_dump(debug_backtrace());
+						$user = $superObject->getMeBlankUser();
+						$user->public_id = getRandomString();
+						$user->first_name = $vc->first_name;
+						$user->last_name = $vc->last_name;
+						$user->email = $vc->login;
+						$user->password = NULL;
+						$user->temp_password = 0;
+						$user->phone = NULL;
+						$user->default_location = NULL;
+						$user->default_module = NULL;
+
+						//var_dump($user);
+						//if save succeeded, lets inject admissions too.
+						if ($user->save()) {
+							$this->record = $this->fetchUserByName($vc->login);
+							//echo($user->public_id);
+						}
+					}
+
+					$isAdmitUser = false;
+					if($superObject != null) {
+						$modules = $superObject->getModules();
+
+						//manual and hackish set modules to session, we will use this in admissions to get module switching to make sense.
+						if(!isset($_SESSION[APP_NAME]['modules'])) {
+							$_SESSION[APP_NAME]['modules'] = array();
+							foreach($modules as $k => $v)
+							{
+								$_SESSION[APP_NAME]['modules'][] = $v->name;
+							}
+							//die(print_r($modules, true));
+						}
+						foreach($modules as $m)
+						{
+							if($m->name == "Admission") {
+								$isAdmitUser = true;
+							}
+						}
+					}
+
+					if($isAdmitUser && $this->record != false) {
+						$obj = new AdmissionDashboardUser;
+						$user = &$this->record;
+						$siteUser = $obj->checkForExisting($this->record->public_id);
+						$siteUser->pubid = $user->public_id;
+						$siteUser->email = $user->email;
+						$siteUser->first = $user->first_name;
+						$siteUser->last = $user->last_name;
+						$siteUser->is_coordinator = 0;
+						$siteUser->module_access = 0;
+						$siteUser->timeout = 0;
+						$siteUser->phone = NULL;
+
+						$siteUser->save($siteUser, db()->dbname2);
+					}
+					
+					$obj = new User;
+					$user = $obj->fetchById($this->record->id);
+					//echo "Saved User\n";
+			
+					$this->writeToSession();
+					
+					//die();
+					if ($this->record == false) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+			}
 		}
 		
 	}
@@ -106,7 +193,13 @@ class Authentication extends Singleton {
 			{	
 				$Vouch->success = $headers['X-Vouch-Success'];
 
-				$Vouch->login = $headers['X-Vouch-Idp-Claims-Login'];
+				//AHC OKTA vs DEV Okta
+				if(isset($headers['X-Vouch-Idp-Claims-Preferred-Username']))
+				{
+					$Vouch->login = $headers['X-Vouch-Idp-Claims-Preferred-Username'];
+				} else {				
+					$Vouch->login = $headers['X-Vouch-Idp-Claims-Login'];
+				}
 
 				//decode useraccess claim for groups
 				$Vouch->Useraccess = explode(",", $headers['X-Vouch-Idp-Claims-Useraccess']);
@@ -125,6 +218,12 @@ class Authentication extends Singleton {
 				});
 
 				$Vouch->default_module = $headers['X-Vouch-Idp-Claims-Defaultmodule'];
+				if(isset($headers['X-Vouch-Idp-Claims-Default-Location'])) {
+					$Vouch->default_location = $headers['X-Vouch-Idp-Claims-Default-Location'];
+				} else {
+					$Vouch->default_location = $Vouch->Available_Loc[0];
+				}
+				
 				$Vouch->name = $headers['X-Vouch-Idp-Claims-Name'];
 				$Vouch->first_name = $headers['X-Vouch-Idp-Claims-Given-Name'];
 				$Vouch->last_name = $headers['X-Vouch-Idp-Claims-Family-Name'];
@@ -188,7 +287,9 @@ class Authentication extends Singleton {
 	 */
 	
 	public function fetchUserByName($username) {
-		$sql = "select {$this->tableName()}.*, `ac_module`.`public_id` as `mod_pubid`, `ac_module`.`name` as 'module_name' from {$this->tableName()} inner join `ac_module` on `ac_module`.`id`={$this->tableName()}.`default_module` where {$this->tableName()}.`email`=:username ";
+		//old query that got module name...
+		//$sql = "select {$this->tableName()}.*, `ac_module`.`public_id` as `mod_pubid`, `ac_module`.`name` as 'module_name' from {$this->tableName()} inner join `ac_module` on `ac_module`.`id`={$this->tableName()}.`default_module` where {$this->tableName()}.`email`=:username ";
+		$sql = "select {$this->tableName()}.* from {$this->tableName()} where {$this->tableName()}.`email`=:username ";
 		$params = array(
 			":username" => $username,
 		);
@@ -320,7 +421,8 @@ class Authentication extends Singleton {
 		if ($this->record !== false) {
 			$sessionVals = array(
 				$this->cookie_name => $this->record->public_id,
-				'default_module' => $this->record->module_name
+				#'default_module' => $this->record->module_name
+				'default_module' => $this->VouchCookie()->default_module
 			);	
 		} else {
 			$sessionVals = array();
@@ -352,7 +454,11 @@ class Authentication extends Singleton {
 
 	public function getDefaultLocation() {
 		//todo add check if in vouch mode then do.
-		return $this->VouchCookie()->default_module;		
+		if(isset($this->VouchCookie()->default_location)){
+			return $this->VouchCookie()->default_location;	
+		} else {
+			return $this->record->default_location;
+		}
 		//return $this->record->default_location;
 	}
 	

@@ -76,7 +76,13 @@ class MainController {
 		return $this->current_url;
 	}
 
+	public function getMeBlankUser() {
+		return $this->loadModel('User');
+	}
 
+	public function getModules() {
+		return $this->loadModel('Module')->fetchUserModules(auth()->getPublicId());
+	}
 
 
 	/*
@@ -150,7 +156,8 @@ class MainController {
 		// $folder = $controller->page, $name = $controller->action, $module = $controller->module
 		// need to be able to allow specific controllers and/or actions past this login block
 		// Make sure the user is logged in
-		if (!auth()->isLoggedIn()) {
+		if (!auth()->isLoggedIn($this)) {
+			#die('user not logged in!');
 			// If the user is not logged in, check if public access to this page is allowed
 			if (method_exists($this, 'allow_access')) {
 				if (in_array($this->action, $this->allow_access())) {
@@ -353,14 +360,31 @@ class MainController {
 			$redirect_url = $params;
 		} else {
 			//$redirect_url = SITE_URL . "/?module=" . $this->module;
-			$redirect_url = SITE_URL;
+			//$redirect_url = SITE_URL;
+
+			//if we don't know where to go go user default.
+			$user = auth()->getRecord();
+			$vc = auth()->VouchCookie();
+
+			if ($vc->default_module == "Admission") {
+
+				$this->redirect(array('module' => 'Admission', 'user' => $user->public_id));
+			} else {
+				$this->redirect(array('module' => $vc->default_module));
+			}
 		}
 		$this->redirectTo($redirect_url);
 
 	}
 
 	private function redirectTo($url) {
+		$holding = debug_backtrace();
+		
+		foreach($holding as $k => $v) {
+			header("X-Redir-By-$k: " . $holding[$k]['file'] . ":[" .$holding[$k]['line']. "]");
+		}
 		header("Location: " . $url);
+		#die(var_dump(debug_backtrace()));
 		exit;
 	}
 
@@ -561,7 +585,7 @@ class MainController {
 			1 => array('pipe', 'w'), // stdout
 			2 => array('pipe', 'w'), // stderr
 		);
-		$process = proc_open('wkhtmltopdf'. $margin .' --page-size Letter --cookie "VouchCookie" "'. $_COOKIE['VouchCookie'].'" --orientation '. $orient. ' --print-media-type -q - -', $descriptorspec, $pipes);
+		$process = proc_open('wkhtmltopdf'. $margin .' --page-size Letter --cookie "VouchCookie" '."'". $_COOKIE['VouchCookie']."'".' --orientation '. $orient. ' --print-media-type -q - -', $descriptorspec, $pipes);
 		// Send the HTML on stdin
 		fwrite($pipes[0], $html);
 		fclose($pipes[0]);
