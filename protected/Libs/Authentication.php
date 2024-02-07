@@ -165,7 +165,8 @@ class Authentication extends Singleton {
 	{
 		if(is_null($this->vc) && isset($_COOKIE['VouchCookie'])){
 			$ch = curl_init();
-			curl_setopt( $ch, CURLOPT_URL, "http://localhost:9090/vp_in_a_path/validate");
+			#curl_setopt( $ch, CURLOPT_URL, "http://localhost:9090/vp_in_a_path/validate");
+			curl_setopt( $ch, CURLOPT_URL, "http://".VOUCH_HOST . ":" . VOUCH_PORT . "/vp_in_a_path/validate");
 			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HEADERFUNCTION,
 				function($curl, $header) use (&$headers)
@@ -547,7 +548,8 @@ class Authentication extends Singleton {
 		
 		//destroy vouch tokens too.
 		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, "http://localhost:9090/vp_in_a_path/logout");
+		#curl_setopt( $ch, CURLOPT_URL, "http://localhost:9090/vp_in_a_path/logout");
+		curl_setopt( $ch, CURLOPT_URL, "http://".VOUCH_HOST . ":" . VOUCH_PORT . "/vp_in_a_path/logout");
 		curl_setopt( $ch, CURLOPT_COOKIE, "VouchCookie=" . $_COOKIE['VouchCookie']);
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true);
 		curl_close ( $ch );

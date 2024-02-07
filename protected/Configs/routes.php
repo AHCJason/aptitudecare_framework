@@ -10,6 +10,7 @@
 * NOTE:  This routes file will handle urls like site_url/page/action or site_url?page=page&action=action.
 *
 */
+
 	// Get the requested URL
 	$request = $_SERVER['REQUEST_URI'];
 

@@ -19,7 +19,7 @@ function debug($string, $array = false) {
 	} else {
 		echo $string;
 	}
-
+	
 	if ($array) {
 		echo '<pre>';
 		print_r ($array);
@@ -39,7 +39,7 @@ function camelizeString($string) {
 	} else {
 		return $string;
 	}
-
+				
 }
 
 
@@ -51,7 +51,7 @@ function underscoreString($string) {
 	} else {
 		return $string;
 	}
-
+	
 }
 
 function hyphenateString($string) {
@@ -72,7 +72,7 @@ function stringify($string) {
 	} else {
 		return ucfirst(preg_replace('/([^A-Z-])([A-Z])/', '$1 $2', $string));
 	}
-
+	
 }
 
 function depluralize($word) {
@@ -119,11 +119,11 @@ function getRandomString($length = 10) {
 
 
 function currentUrl() {
-	return htmlspecialchars_decode('https://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
+	return htmlspecialchars_decode('https://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);	
 }
 
 function json_return($data) {
-	header("Content-type: application/json");
+	header("Content-type: text/javascript");
 	echo json_encode($data);
 	exit;
 }
@@ -149,9 +149,9 @@ function getUSAStates() {
 
 function getEthnicities() {
 	return array(
-		"African American",
-		"Asian",
-		"Caucasian",
+		"African American", 
+		"Asian", 
+		"Caucasian", 
 		"Hispanic",
 		"Other"
 	);
@@ -186,21 +186,21 @@ function getMaritalStatuses() {
 function mysql_datetime($date = null) {
 	if ($date == null) {
 		$date = 'now';
-	}
+	} 
 	return date('Y-m-d H:i:s', strtotime($date));
 }
 
 function mysql_datetime_admit($date = null) {
 	if ($date == null) {
 		$date = 'now';
-	}
+	} 
 	return date('Y-m-d 11:00:00', strtotime($date));
 }
 
 function mysql_date($date = null) {
 	if ($date == null) {
 		$date = 'now';
-	}
+	} 
 	return date('Y-m-d', strtotime($date));
 }
 
@@ -241,3 +241,7 @@ function getAge($dob = false) {
 
 	return false;
 }
+
+
+
+

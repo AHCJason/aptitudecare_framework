@@ -295,34 +295,36 @@ class MySqlDb {
 		//	Check for public id
 		//die("<pre>".print_r($data, true));
 
-		if (isset($data->public_id)) {
-			if ($data->public_id == '') {
+
+
+		if (property_exists($data, "public_id")) {
+			if ($data->public_id == NULL || $data->public_id == '') {
 				$data->public_id = getRandomString();
 			}
 		} 
 		
-		if (isset($data->datetime_created)) {
+		if (property_exists($data, 'datetime_created')) {
 			if ($data->datetime_created == null || $data->datetime_created == '0000-00-00 00:00:00') {
 				$data->datetime_created = mysql_datetime();
 			}
 		} 
 		
-		if (isset($data->datetime_modified)) {
+		if (property_exists($data, 'datetime_modified')) {
 			$data->datetime_modified = mysql_datetime();
 		}	
 
-		if (isset($data->datetime_last_login)) {
+		if (property_exists($data, 'datetime_last_login')) {
 			$data->datetime_last_login = mysql_datetime();
 		}			
 
 		//	Get user data from the session
 		$user = auth()->getRecord();
 
-		if (isset($data->user_created) && ($data->user_created == '' || $data->user_created == 0)) {
+		if (property_exists($data, 'user_created') && ($data->user_created == '' || $data->user_created == 0)) {
 			$data->user_created = $user->id;
 		}
 
-		if (isset($data->user_modified)) {
+		if (property_exists($data, 'user_modified')) {
 			$data->user_modified = $user->id;
 		}
 

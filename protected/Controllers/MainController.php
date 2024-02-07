@@ -596,7 +596,7 @@ class MainController {
 		fclose($pipes[1]);
 		$return_value = proc_close($process);
 		// Output the results
-		if ($errors) {
+		if ($errors && strpos($errors, "libpng warning:") !== 0) {
 			throw new Exception('PDF generation failed: ' . $errors);
 		} else {
 			header('Content-Type: application/pdf');
