@@ -379,10 +379,10 @@ class MainController {
 
 	private function redirectTo($url) {
 		$holding = debug_backtrace();
-		
-		foreach($holding as $k => $v) {
-			header("X-Redir-By-$k: " . $holding[$k]['file'] . ":[" .$holding[$k]['line']. "]");
-		}
+		//Debug headers:
+		//foreach($holding as $k => $v) {
+		//	header("X-Redir-By-$k: " . $holding[$k]['file'] . ":[" .$holding[$k]['line']. "]");
+		//}
 		header("Location: " . $url);
 		#die(var_dump(debug_backtrace()));
 		exit;
