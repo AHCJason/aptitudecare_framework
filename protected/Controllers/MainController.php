@@ -355,7 +355,8 @@ class MainController {
 					$redirect_url .= "{$k}={$p}&";
 				}
 
-				$redirect_url = trim ($redirect_url, "&amp;");
+				//Only Trim &, not chars & a m p;
+				$redirect_url = trim ($redirect_url, "&");
 		} elseif ($params) {
 			$redirect_url = $params;
 		} else {
